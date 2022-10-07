@@ -1,4 +1,3 @@
-// token = a5d3baf313c1b7713a3e6d1dfd0c13986d74ff0b
 import { getAllFormSubmissions, OnaApiService, upLoadMarkerColor } from './services';
 import { Configs, PriorityLevel, SymbologyConfig } from './types';
 import { createInfoLog, createVerboseLog, createWarnLog } from './utils';
@@ -37,6 +36,7 @@ export async function Transform(apiToken: string, config: Configs) {
       query: `{"facility": ${facilityId}}`, // filter visit submissions for this facility
       sort: '{"date_of_visit": -1}' // sort in descending, most recent first.
     };
+
     return service
       .fetchPaginatedFormSubmissions(visitformId, 100, query)
       .then((visitSubmissions) => {
@@ -60,7 +60,6 @@ export async function Transform(apiToken: string, config: Configs) {
         const symbologyConfig =
           orderedSymbologyConfig[mostRecentSubmission.priority_level as PriorityLevel];
 
-        // TODO - re-computed alot of times
         for (const value of symbologyConfig.symbologyOnOverflow) {
           const { overFlowDays, color } = value;
           if (recentVisitDiffToNow > symbologyConfig.frequency + overFlowDays) {
