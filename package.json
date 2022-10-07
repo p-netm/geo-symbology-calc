@@ -10,14 +10,25 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "eslint": "^8.0.0",
     "eslint-config-custom": "*",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "prettier-plugin-svelte": "^2.7.0",
     "turbo": "latest"
+  },
+  "lint-staged": {
+    "!(*d).ts": [
+      "eslint --fix --max-warnings 0"
+    ],
+    "*.{json,js,ts,css,scss,md}": [
+      "prettier --write"
+    ]
   },
   "engines": {
     "node": ">=16.0.0"
