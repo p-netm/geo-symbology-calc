@@ -1,4 +1,4 @@
-# Turborepo starter
+# Geo Symbology calc
 
 This is an official Yarn (Berry) starter turborepo.
 
@@ -8,9 +8,7 @@ This turborepo uses [Yarn](https://yarnpkg.com/) as a package manager. It includ
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org) app
-- `web`: another [Next.js](https://nextjs.org) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
+- `web`: another [Svelte.js](https://kit.svelte.dev/) app
 - `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `tsconfig`: `tsconfig.json`s used throughout the monorepo
 
