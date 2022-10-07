@@ -179,9 +179,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@onaio/transformer@workspace:packages/trasformer":
+"@onaio/symbology-calc-core@*, @onaio/symbology-calc-core@workspace:packages/core":
   version: 0.0.0-use.local
-  resolution: "@onaio/transformer@workspace:packages/trasformer"
+  resolution: "@onaio/symbology-calc-core@workspace:packages/core"
   dependencies:
     "@types/lodash": ^4.14.186
     "@types/uuid": ^8.3.4
@@ -3683,6 +3683,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "web@workspace:apps/web"
   dependencies:
+    "@onaio/symbology-calc-core": "*"
     "@playwright/test": ^1.25.0
     "@sveltejs/adapter-auto": next
     "@sveltejs/kit": next
