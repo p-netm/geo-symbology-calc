@@ -1,0 +1,170 @@
+{
+  "url": "https://stage-api.ona.io/api/v1/forms/3623",
+  "formid": 3623,
+  "metadata": [
+    {
+      "id": 87255,
+      "xform": 3623,
+      "data_value": "https://enketo.ona.io/preview/GS11Q33P",
+      "data_type": "enketo_preview_url",
+      "data_file": null,
+      "extra_data": {},
+      "data_file_type": null,
+      "media_url": null,
+      "file_hash": null,
+      "url": "https://stage-api.ona.io/api/v1/metadata/87255",
+      "date_created": "2022-10-03T06:38:21.879042Z"
+    },
+    {
+      "id": 87256,
+      "xform": 3623,
+      "data_value": "https://enketo.ona.io/single/GS11Q33P",
+      "data_type": "enketo_single_submit_url",
+      "data_file": null,
+      "extra_data": {},
+      "data_file_type": null,
+      "media_url": null,
+      "file_hash": null,
+      "url": "https://stage-api.ona.io/api/v1/metadata/87256",
+      "date_created": "2022-10-03T06:38:22.045449Z"
+    },
+    {
+      "id": 87254,
+      "xform": 3623,
+      "data_value": "https://enketo.ona.io/x/GS11Q33P",
+      "data_type": "enketo_url",
+      "data_file": null,
+      "extra_data": {},
+      "data_file_type": null,
+      "media_url": null,
+      "file_hash": null,
+      "url": "https://stage-api.ona.io/api/v1/metadata/87254",
+      "date_created": "2022-10-03T06:38:21.677459Z"
+    },
+    {
+      "id": 87261,
+      "xform": 3623,
+      "data_value": "name_of_facility_visited.csv",
+      "data_type": "media",
+      "data_file": "https://onadata-stage.s3.amazonaws.com/meg_org/formid-media/name_of_facility_visited_HQafQoc.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAWQFL2DORDTL7LMHY%2F20221007%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Date=20221007T121138Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=348c16915e8087a3a7b4effbbf6a3b7a624e0086802c2205a2abf2d211ea618d",
+      "extra_data": null,
+      "data_file_type": "text/csv",
+      "media_url": "https://onadata-stage.s3.amazonaws.com/meg_org/formid-media/name_of_facility_visited_HQafQoc.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAWQFL2DORDTL7LMHY%2F20221007%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Date=20221007T121138Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=348c16915e8087a3a7b4effbbf6a3b7a624e0086802c2205a2abf2d211ea618d",
+      "file_hash": "md5:4ede16d962e959b9cf89d5c13035f7c6",
+      "url": "https://stage-api.ona.io/api/v1/metadata/87261",
+      "date_created": "2022-10-03T06:40:27.778550Z"
+    },
+    {
+      "id": 87260,
+      "xform": 3623,
+      "data_value": "wards.csv",
+      "data_type": "media",
+      "data_file": "https://onadata-stage.s3.amazonaws.com/meg_org/formid-media/wards_JxQlQam.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAWQFL2DORDTL7LMHY%2F20221007%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Date=20221007T121138Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=3a0fa9a0f05c9eff16353b55e8885b31eac0ded912221bda6c0557a66ea709c8",
+      "extra_data": null,
+      "data_file_type": "text/csv",
+      "media_url": "https://onadata-stage.s3.amazonaws.com/meg_org/formid-media/wards_JxQlQam.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAWQFL2DORDTL7LMHY%2F20221007%2Feu-west-1%2Fs3%2Faws4_request&X-Amz-Date=20221007T121138Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=3a0fa9a0f05c9eff16353b55e8885b31eac0ded912221bda6c0557a66ea709c8",
+      "file_hash": "md5:cfa9a44eaaebb631cd706808bfb370af",
+      "url": "https://stage-api.ona.io/api/v1/metadata/87260",
+      "date_created": "2022-10-03T06:40:25.659738Z"
+    }
+  ],
+  "owner": "https://stage-api.ona.io/api/v1/users/meg_org",
+  "created_by": "https://stage-api.ona.io/api/v1/users/meg_schro",
+  "public": false,
+  "public_data": false,
+  "public_key": "",
+  "require_auth": false,
+  "submission_count_for_today": 0,
+  "tags": [],
+  "title": "Facility Registration V3",
+  "users": [
+    {
+      "is_org": false,
+      "metadata": {
+        "zebra": {
+          "tos-pp": { "2018-03-30": { "date": "2019-08-13T16:10:58.088Z", "accepted": true } },
+          "first-login": false,
+          "dataview-beta?": true,
+          "eu-citizen-consent": { "date": "2022-10-03T12:22:15.152Z", "eu-citizen-data": false },
+          "hide-home-walkthrough?": true,
+          "hide-data-view-walkthrough?": true,
+          "hide-project-view-walkthrough?": true,
+          "hide-beta-features-walkthrough?": true,
+          "hide-dataview-beta-tag-walkthrough?": true
+        },
+        "is_email_verified": false,
+        "last_password_edit": "2019-08-13T16:12:29.553205+00:00"
+      },
+      "first_name": "Peter",
+      "last_name": "Muriuki",
+      "user": "cprice",
+      "role": "owner"
+    },
+    {
+      "is_org": true,
+      "metadata": {
+        "zebra": {
+          "first-load": true,
+          "hide-odk-notification?": false,
+          "hide-billing-notification?": false,
+          "hide-usage-limit-notification?": false
+        }
+      },
+      "first_name": "Megan's",
+      "last_name": "Org",
+      "user": "meg_org",
+      "role": "owner"
+    },
+    {
+      "is_org": false,
+      "metadata": {
+        "zebra": {
+          "tos-pp": { "2018-03-30": { "date": "2018-05-31T07:45:03.686Z", "accepted": true } },
+          "dataview-beta?": true,
+          "eu-citizen-consent": { "date": "2018-05-31T07:45:00.195Z", "eu-citizen-data": false },
+          "hide-home-walkthrough?": true,
+          "hide-data-view-walkthrough?": true,
+          "hide-share-modal-walkthrough?": true,
+          "hide-project-view-walkthrough?": true,
+          "hide-beta-features-walkthrough?": true,
+          "hide-dataview-beta-tag-walkthrough?": true
+        },
+        "first-login": false,
+        "is_email_verified": false
+      },
+      "first_name": "Megan",
+      "last_name": "",
+      "user": "meg_schro",
+      "role": "owner"
+    }
+  ],
+  "enketo_url": "https://enketo.ona.io/x/GS11Q33P",
+  "enketo_preview_url": "https://enketo.ona.io/preview/GS11Q33P",
+  "enketo_single_submit_url": "https://enketo.ona.io/x/GS11Q33P",
+  "num_of_submissions": 10,
+  "last_submission_time": "2022-10-03T13:23:45.374795+00:00",
+  "form_versions": [
+    { "version": "202210030639", "total": 5 },
+    { "version": "202210031315", "total": 5 }
+  ],
+  "data_views": [],
+  "xls_available": true,
+  "description": "",
+  "downloadable": true,
+  "allows_sms": false,
+  "encrypted": false,
+  "sms_id_string": "cameroon_iss_registration_v2",
+  "id_string": "cameroon_iss_registration_v2_1",
+  "date_created": "2022-10-03T02:38:18.125868-04:00",
+  "date_modified": "2022-10-03T09:15:22.157344-04:00",
+  "uuid": "ff965c7d5acc4011b5529900c5542a23",
+  "bamboo_dataset": "",
+  "instances_with_geopoints": true,
+  "instances_with_osm": false,
+  "version": "202210031315",
+  "has_hxl_support": false,
+  "last_updated_at": "2022-10-03T09:15:22.157376-04:00",
+  "hash": "md5:db2029d9b082cd253510967910e8f2f5",
+  "is_merged_dataset": false,
+  "project": "https://stage-api.ona.io/api/v1/projects/1513"
+}

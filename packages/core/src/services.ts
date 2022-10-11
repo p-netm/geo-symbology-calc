@@ -86,10 +86,12 @@ export class OnaApiService {
     const newInstanceId = `uuid:${v4()}`;
     const payload = {
       id: formId,
-      ...submissionPayload,
-      meta: {
-        instanceID: newInstanceId,
-        deprecatedID: oldInstanceId
+      submission: {
+        ...submissionPayload,
+        meta: {
+          instanceID: newInstanceId,
+          deprecatedID: oldInstanceId
+        }
       }
     };
     const fullEditSubmissionUrl = `${this.baseUrl}/${editSubmissionPath}`;

@@ -1,32 +1,15 @@
 import { getAllFormSubmissions, OnaApiService, upLoadMarkerColor } from './services';
-import { Configs, PriorityLevel, SymbologyConfig } from './types';
-import { createInfoLog, createVerboseLog, createWarnLog } from './utils';
+import { Configs } from './types';
+import { colorDeciderFactory, createInfoLog, createVerboseLog, createWarnLog } from './utils';
 
-/** for each priority level order the symbology on overflow such that the overflow days are in descending order. */
-const orderSymbologyConfig = (config: SymbologyConfig) => {
-  const OrderedConfig: Record<string, unknown> = {};
-  Object.entries(config).forEach(([priorityLevel, value]) => {
-    const unorderedOverFlowDays = value.symbologyOnOverflow;
-    OrderedConfig[priorityLevel] = {
-      ...value,
-      symbologyOnOverflow: unorderedOverFlowDays.slice().sort((overFlow1, overFlow2) => {
-        return overFlow2.overFlowDays - overFlow1.overFlowDays;
-      })
-    };
-  });
-  return OrderedConfig as SymbologyConfig;
-};
-
-export async function Transform(apiToken: string, config: Configs) {
-  // get data from registration form id. -> interests here is the geodata.
-  const baseUrl = 'https://stage-api.ona.io';
-  const { formPair, symbolConfig, logger } = config;
+export async function transform(config: Configs) {
+  const { formPair, symbolConfig, logger, baseUrl, apiToken } = config;
   const { registrationFormId, visitformId } = formPair;
 
   const service = new OnaApiService(baseUrl, apiToken, logger);
 
   const regFormGeoSubmissions = await getAllFormSubmissions(service, registrationFormId);
-  const orderedSymbologyConfig = orderSymbologyConfig(symbolConfig);
+  const colorDecider = colorDeciderFactory(symbolConfig, logger);
 
   const updateRegFormSubmissionsPromises = regFormGeoSubmissions.map(async (regFormSubmission) => {
     const facilityId = regFormSubmission._id;
@@ -48,7 +31,7 @@ export async function Transform(apiToken: string, config: Configs) {
               `facility _id: ${facilityId} latest visit submission has _id: ${mostRecentSubmission._id}`
             )
           );
-          // assign red as map-color
+
           const dateOfVisit = Date.parse(mostRecentSubmission.date_of_visit);
           const now = Date.now();
           const msInADay = 1000 * 60 * 60 * 24;
@@ -57,21 +40,16 @@ export async function Transform(apiToken: string, config: Configs) {
           logger(createWarnLog(`facility _id: ${facilityId} has no visit submissions`));
         }
 
-        const symbologyConfig =
-          orderedSymbologyConfig[mostRecentSubmission.priority_level as PriorityLevel];
-
-        for (const value of symbologyConfig.symbologyOnOverflow) {
-          const { overFlowDays, color } = value;
-          if (recentVisitDiffToNow > symbologyConfig.frequency + overFlowDays) {
-            if (regFormSubmission['marker-color'] === value) {
-              logger(
-                createInfoLog(
-                  `facility _id: ${facilityId} submission already has the correct color, no action needed`
-                )
-              );
-            } else {
-              return upLoadMarkerColor(service, visitformId, regFormSubmission, color);
-            }
+        const color = colorDecider(recentVisitDiffToNow, regFormSubmission);
+        if (color) {
+          if (regFormSubmission['marker-color'] === color) {
+            logger(
+              createInfoLog(
+                `facility _id: ${facilityId} submission already has the correct color, no action needed`
+              )
+            );
+          } else {
+            return upLoadMarkerColor(service, registrationFormId, regFormSubmission, color);
           }
         }
       });

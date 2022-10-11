@@ -21,6 +21,8 @@ export interface Configs {
   };
   symbolConfig: SymbologyConfig;
   logger: LogFn;
+  apiToken: string;
+  baseUrl: string;
 }
 
 export enum PriorityLevel {
