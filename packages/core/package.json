@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.186",
+    "@types/node-cron": "^3.0.4",
     "@types/uuid": "^8.3.4",
     "eslint-config-custom": "*",
     "jest": "^29.1.2",
@@ -19,7 +20,9 @@
   },
   "dependencies": {
     "lodash": "^4.17.21",
+    "node-cron": "^3.0.2",
     "node-fetch": "^2.6",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "yup": "^0.32.11"
   }
 }
