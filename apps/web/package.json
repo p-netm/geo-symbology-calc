@@ -16,6 +16,7 @@
 		"@playwright/test": "^1.25.0",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
+		"@types/config": "^3.3.0",
 		"@typescript-eslint/eslint-plugin": "^5.27.0",
 		"@typescript-eslint/parser": "^5.27.0",
 		"eslint": "^8.16.0",
@@ -31,7 +32,14 @@
 		"vite": "^3.1.0"
 	},
 	"dependencies": {
-		"@onaio/symbology-calc-core": "*"
+		"@onaio/symbology-calc-core": "*",
+		"config": "^3.3.8",
+		"cronstrue": "^2.14.0",
+		"lodash": "^4.17.21",
+		"node-cron": "^3.0.2",
+		"svelte-forms-lib": "^2.0.1",
+		"svelte-yup": "^1.0.5",
+		"yup": "^0.32.11"
 	},
 	"type": "module"
 }
