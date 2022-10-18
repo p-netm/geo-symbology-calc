@@ -21,7 +21,8 @@ export class OnaApiService {
   getCommonFetchOptions() {
     return {
       headers: {
-        Authorization: `token ${this.token}`
+        Authorization: `token ${this.token}`,
+        'content-type': 'application/json'
       }
     };
   }
