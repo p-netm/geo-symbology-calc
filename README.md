@@ -8,19 +8,10 @@ This turborepo uses [Yarn](https://yarnpkg.com/) as a package manager. It includ
 
 ### Apps and Packages
 
-- `web`: another [Svelte.js](https://kit.svelte.dev/) app
+- `web`: The GUI interface
+- `core`: util that is able to pull form data and evaluates it according to configured business rules.
 - `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `tsconfig`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
 
 ### Build
 
@@ -28,6 +19,7 @@ To build all apps and packages, run the following command:
 
 ```shell
 # in root dir
+yarn install
 yarn build
 ```
 
@@ -37,6 +29,7 @@ To develop all apps and packages, run the following command:
 
 ```shell
 # in root dir
+yarn install
 yarn dev
 ```
 
