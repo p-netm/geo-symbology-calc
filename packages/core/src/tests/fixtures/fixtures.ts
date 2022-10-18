@@ -1,4 +1,4 @@
-import { Configs, PriorityLevel } from '../../types';
+import { Config, PriorityLevel } from '../../types';
 import form3623 from '../fixtures/3623-form.json';
 import form3623Submissions from '../fixtures/3623-form-submissions.json';
 import form3624Submissions from '../fixtures/3624-form-submissions.json';
@@ -6,10 +6,10 @@ import form3624Submissions from '../fixtures/3624-form-submissions.json';
 export { form3623, form3623Submissions, form3624Submissions };
 
 export const apiToken = 'apiToken';
-export const createConfigs = (loggerMock: jest.Mock): Configs => ({
+export const createConfigs = (loggerMock: jest.Mock): Config => ({
   formPair: {
-    registrationFormId: '3623',
-    visitformId: '3624'
+    regFormId: '3623',
+    visitFormId: '3624'
   },
   symbolConfig: {
     [PriorityLevel.VERY_HIGH]: {

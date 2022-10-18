@@ -1,16 +1,18 @@
-import { flatMap } from 'lodash';
+import lodash from 'lodash';
 import { editSumbissionEdnpoint, formEndpoint, submittedDataEndpoint } from './constants';
 import { v4 } from 'uuid';
 import { Color, LogFn } from './types';
 import { createErrorLog, createInfoLog, createVerboseLog } from './utils';
 
+const { flatMap } = lodash;
+
 /** create a service class */
 export class OnaApiService {
   private baseUrl: string;
   private token: string;
-  private logger: LogFn;
+  private logger: LogFn | undefined;
 
-  constructor(baseUrl: string, apiToken: string, logger: LogFn) {
+  constructor(baseUrl: string, apiToken: string, logger?: LogFn) {
     this.baseUrl = baseUrl;
     this.token = apiToken;
     this.logger = logger;
@@ -28,11 +30,11 @@ export class OnaApiService {
     const formUrl = `${this.baseUrl}/${getFormPath}/${formId}`;
     return fetch(formUrl, { ...this.getCommonFetchOptions() })
       .then((res) => {
-        this.logger(createVerboseLog(`Fetched form id: ${formId}`));
+        this.logger?.(createVerboseLog(`Fetched form id: ${formId}`));
         return res.json();
       })
       .catch((err) => {
-        this.logger(createErrorLog(`Unable to fetch form with id: ${formId}`));
+        this.logger?.(createErrorLog(`Unable to fetch form with id: ${formId}`));
         throw err;
       });
   }
@@ -44,7 +46,7 @@ export class OnaApiService {
     getSubmissionsPath: string = submittedDataEndpoint
   ) {
     // TODO - tool to better create urls
-    this.logger(createVerboseLog(`Start fetching submissions for form id: ${formId}`));
+    this.logger?.(createVerboseLog(`Start fetching submissions for form id: ${formId}`));
     const fullSubmissionsUrl = `${this.baseUrl}/${getSubmissionsPath}/${formId}`;
     const fetchSubmissionPromises = [];
     const pageSize = 100;
@@ -67,13 +69,13 @@ export class OnaApiService {
     return Promise.all(fetchSubmissionPromises.map((x) => x()))
       .then((jsonArrays) => {
         const flattened = flatMap(jsonArrays);
-        this.logger(
+        this.logger?.(
           createInfoLog(`Fetched ${flattened.length} submissions for form id: ${formId}`)
         );
         return flattened;
       })
       .catch((err) => {
-        this.logger(createErrorLog(`Unable to fetch submissions for form id: ${formId}`));
+        this.logger?.(createErrorLog(`Unable to fetch submissions for form id: ${formId}`));
         throw err;
       });
   }
@@ -101,11 +103,11 @@ export class OnaApiService {
       body: JSON.stringify(payload)
     })
       .then((res) => {
-        this.logger(createVerboseLog(`Edited submission with prk: ${submissionPayload._id}`));
+        this.logger?.(createVerboseLog(`Edited submission with prk: ${submissionPayload._id}`));
         res.json();
       })
       .catch((err) => {
-        this.logger(
+        this.logger?.(
           createErrorLog(`Failed to edit submission with primaryKey: ${submissionPayload._id}`)
         );
         throw err;

@@ -14,15 +14,17 @@ export interface LogMessageObject {
 }
 
 export type LogFn = (message: LogMessageObject) => undefined;
-export interface Configs {
+export type CronTabString = string;
+export interface Config {
   formPair: {
-    registrationFormId: string;
-    visitformId: string;
+    regFormId: string;
+    visitFormId: string;
   };
   symbolConfig: SymbologyConfig;
-  logger: LogFn;
+  logger?: LogFn;
   apiToken: string;
   baseUrl: string;
+  schedule: CronTabString;
 }
 
 export enum PriorityLevel {
@@ -35,8 +37,7 @@ export enum PriorityLevel {
 export type Color = string;
 
 export type SymbologyConfig = {
-  [Key in PriorityLevel]: {
-    frequency: number;
-    symbologyOnOverflow: { overFlowDays: number; color: Color }[];
-  };
-};
+  priorityLevel: PriorityLevel;
+  frequency: number;
+  symbologyOnOverflow: { overFlowDays: number; color: Color }[];
+}[];

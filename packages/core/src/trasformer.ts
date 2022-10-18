@@ -1,10 +1,11 @@
 import { getAllFormSubmissions, OnaApiService, upLoadMarkerColor } from './services';
-import { Configs } from './types';
+import { Config } from './types';
 import { colorDeciderFactory, createInfoLog, createVerboseLog, createWarnLog } from './utils';
+import cron from 'node-cron';
 
-export async function transform(config: Configs) {
+export async function transform(config: Omit<Config, 'schedule'>) {
   const { formPair, symbolConfig, logger, baseUrl, apiToken } = config;
-  const { registrationFormId, visitformId } = formPair;
+  const { regFormId: registrationFormId, visitFormId: visitformId } = formPair;
 
   const service = new OnaApiService(baseUrl, apiToken, logger);
 
@@ -13,7 +14,7 @@ export async function transform(config: Configs) {
 
   const updateRegFormSubmissionsPromises = regFormGeoSubmissions.map(async (regFormSubmission) => {
     const facilityId = regFormSubmission._id;
-    logger(createVerboseLog(`Start evaluating symbology for submission _id: ${facilityId}`));
+    logger?.(createVerboseLog(`Start evaluating symbology for submission _id: ${facilityId}`));
     // fetch the most recent visit submission for this facility
     const query = {
       query: `{"facility": ${facilityId}}`, // filter visit submissions for this facility
@@ -26,7 +27,7 @@ export async function transform(config: Configs) {
         const mostRecentSubmission = visitSubmissions[0];
         let recentVisitDiffToNow = Infinity;
         if (mostRecentSubmission !== undefined) {
-          logger(
+          logger?.(
             createInfoLog(
               `facility _id: ${facilityId} latest visit submission has _id: ${mostRecentSubmission._id}`
             )
@@ -37,13 +38,13 @@ export async function transform(config: Configs) {
           const msInADay = 1000 * 60 * 60 * 24;
           recentVisitDiffToNow = Math.ceil((now - dateOfVisit) / msInADay);
         } else {
-          logger(createWarnLog(`facility _id: ${facilityId} has no visit submissions`));
+          logger?.(createWarnLog(`facility _id: ${facilityId} has no visit submissions`));
         }
 
         const color = colorDecider(recentVisitDiffToNow, regFormSubmission);
         if (color) {
           if (regFormSubmission['marker-color'] === color) {
-            logger(
+            logger?.(
               createInfoLog(
                 `facility _id: ${facilityId} submission already has the correct color, no action needed`
               )
@@ -56,6 +57,12 @@ export async function transform(config: Configs) {
   });
 
   return Promise.all(updateRegFormSubmissionsPromises).then(() => {
-    logger(createInfoLog(`Finished processing `));
+    logger?.(createInfoLog(`Finished processing `));
   });
+}
+
+export function transformOnSchedule(config: Config) {
+  const { schedule, ...restConfigs } = config;
+
+  cron.schedule(schedule, () => transform(restConfigs));
 }
