@@ -1,0 +1,75 @@
+{
+	"allSymbologyConfigs": [
+		{
+			"baseUrl": "https://stage-api.ona.io",
+			"formPair": {
+				"regFormId": "3623",
+				"visitFormId": "3624"
+			},
+			"apiToken": "secret key",
+			"symbolConfig": [
+				{
+					"priorityLevel": "Very_High",
+					"frequency": 3,
+					"symbologyOnOverflow": [
+						{
+							"overFlowDays": 0,
+							"color": "green"
+						},
+						{
+							"overFlowDays": 1,
+							"color": "yellow"
+						},
+						{
+							"overFlowDays": 4,
+							"color": "red"
+						}
+					]
+				},
+				{
+					"priorityLevel": "High",
+					"frequency": 7,
+					"symbologyOnOverflow": [
+						{
+							"overFlowDays": 0,
+							"color": "green"
+						},
+						{
+							"overFlowDays": 1,
+							"color": "red"
+						}
+					]
+				},
+				{
+					"priorityLevel": "Medium",
+					"frequency": 14,
+					"symbologyOnOverflow": [
+						{
+							"overFlowDays": 0,
+							"color": "green"
+						},
+						{
+							"overFlowDays": 1,
+							"color": "red"
+						}
+					]
+				},
+				{
+					"priorityLevel": "Low",
+					"frequency": 30,
+					"symbologyOnOverflow": [
+						{
+							"overFlowDays": 0,
+							"color": "green"
+						},
+						{
+							"overFlowDays": 1,
+							"color": "red"
+						}
+					]
+				}
+			],
+			"schedule": "0 0 * * 1"
+		}
+	]
+}
