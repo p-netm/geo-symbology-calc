@@ -5,6 +5,7 @@
 	import { range } from 'lodash';
 	import { parseForTable } from './utils';
 	import cronstrue from 'cronstrue';
+	import PageHeader from '$lib/shared/components/PageHeader.svelte';
 	
 	export let data: PageData;
 
@@ -36,6 +37,7 @@
 </script>
 
 <main>
+	<PageHeader pageTitle="Configured Pipeline list"></PageHeader>
 	{#each data.configs as config}
 	{@const {tableHeaders, tableRows, colorsColSpan} = parseForTable(config)}
 	<div class="card text-center mx-2">
