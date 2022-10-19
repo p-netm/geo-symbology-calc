@@ -1,5 +1,8 @@
 <script lang="ts">
+	import PageHeader from '$lib/shared/components/PageHeader.svelte';
 	import { createForm } from 'svelte-forms-lib';
+	import ErrorMessage from './components/ErrorMessage.svelte';
+	import ScheduleExplainer from './components/ScheduleExplainer.svelte';
 	import {
 		defaultPriorityConfig,
 		generateFilledData,
@@ -10,8 +13,6 @@
 
 	const preDeterminedPriorityLevels = Object.values(PriorityLevel);
 
-	$: generatedJson = '{}';
-
 	const { form, errors, handleChange, handleSubmit } = createForm({
 		initialValues,
 		validationSchema: undefined,
@@ -20,6 +21,8 @@
 			generatedJson = JSON.stringify(filled, null, 2);
 		}
 	});
+
+	$: generatedJson = JSON.stringify(generateFilledData($form), null, 2);
 
 	const addPriorityLevel = () => {
 		$form.symbolConfig = $form.symbolConfig.concat(defaultPriorityConfig);
@@ -55,6 +58,7 @@
 		};
 </script>
 
+<PageHeader pageTitle="Create Symbology configs form" />
 <div class="row g-3 mx-auto">
 	<div class="col-sm-6 col-md-8">
 		<form class="form" on:submit={handleSubmit}>
@@ -69,9 +73,7 @@
 						on:change={handleChange}
 						bind:value={$form.formPair.regFormId}
 					/>
-					{#if $errors.formPair.regFormId}
-						<small>{JSON.stringify($errors.formPair.regFormId)}</small>
-					{/if}
+					<ErrorMessage {errors} name="formPair.regFormId" />
 				</div>
 			</div>
 			<div class="form-group row mb-2">
@@ -85,10 +87,7 @@
 						on:change={handleChange}
 						bind:value={$form.formPair.visitFormId}
 					/>
-					<!-- TODO - dry out as Message Component -->
-					{#if $errors.formPair.visitFormId}
-						<small>{$errors.formPair.visitFormId}</small>
-					{/if}
+					<ErrorMessage {errors} name={`formPair.visitFormId`} />
 				</div>
 			</div>
 			<div class="form-group row mb-2">
@@ -98,14 +97,12 @@
 						id="baseUrl"
 						type="url"
 						class="form-control"
+						name="baseUrl"
 						on:change={handleChange}
 						bind:value={$form.baseUrl}
 					/>
+					<ErrorMessage {errors} name="baseUrl" />
 				</div>
-				{#if $errors.baseUrl}
-					name="baseUrl"
-					<small>{$errors.baseUrl}</small>
-				{/if}
 			</div>
 
 			<div class="form-group row mb-2">
@@ -119,34 +116,15 @@
 						class="form-control"
 						bind:value={$form.apiToken}
 					/>
+					<ErrorMessage {errors} name="apiToken" />
 				</div>
-				{#if $errors.apiToken}
-					<small>{$errors.apiToken}</small>
-				{/if}
 			</div>
 
 			<div class="form-group row mb-2">
 				<label for="schedule" class="col-sm-3">Schedule</label>
 				<div class="form-group col-sm-9 row mb-2">
 					<div>
-						<span>
-							Schedule is a cron expression made of five fields. Each field can have the following values.
-						</span>
-						<table class="table table-sm table-bordered table-striped">
-							<thead><tr><th>*</th><th>*</th><th>*</th><th>*</th><th>*</th></tr></thead><tbody
-								><tr
-									><td>minute <br> (0-59)</td><td>hour<br> (0 - 23)</td><td>day of the month<br> (1 - 31)</td><td
-										>month<br> (1 - 12)</td
-									><td>day of the week<br> (0 - 6)</td></tr
-								></tbody
-							>
-						</table>
-						<span>
-							You can use this online generation tool: <a
-								href="https://crontab.cronhub.io/"
-								target="_blank">crontab</a
-							>
-						</span>
+						<ScheduleExplainer />
 						<input
 							id="schedule"
 							name="schedule"
@@ -154,10 +132,7 @@
 							class="form-control"
 							bind:value={$form.schedule}
 						/>
-
-						{#if $errors.schedule}
-							<small>{$errors.schedule}</small>
-						{/if}
+						<ErrorMessage {errors} name="schedule" />
 					</div>
 				</div>
 			</div>
@@ -181,10 +156,8 @@
 												<option>{priorityLevel}</option>
 											{/each}
 										</select>
+										<ErrorMessage {errors} name={`symbolConfig${i}.priorityLevel`} />
 									</div>
-									<!-- {#if $errors.symbolConfig[i].priorityLevel}
-										<small>{$errors.symbolConfig[i].priorityLevel}</small>
-									{/if} -->
 								</div>
 
 								<div class="form-group row mb-2">
@@ -197,10 +170,8 @@
 											class="form-control"
 											bind:value={$form.symbolConfig[i].frequency}
 										/>
+										<ErrorMessage {errors} name={`symbolConfig${i}.frequency`} />
 									</div>
-									<!-- {#if $errors.symbolConfig[i].frequency}
-										<small>{$errors.symbolConfig[i].frequency}</small>
-									{/if} -->
 								</div>
 
 								<div class="form-group row">
@@ -224,6 +195,10 @@
 																bind:value={$form.symbolConfig[i].symbologyOnOverflow[j]
 																	.overFlowDays}
 															/>
+															<ErrorMessage
+																{errors}
+																name={`symbolConfig[${i}].symbologyOnOverflow[${j}].overFlowDays`}
+															/>
 														</div>
 													</div>
 													<div class="row mb-2">
@@ -239,6 +214,10 @@
 																id={`symbolConfig[${i}].symbologyOnOverflow[${j}].color`}
 																title="Pick color"
 																bind:value={$form.symbolConfig[i].symbologyOnOverflow[j].color}
+															/>
+															<ErrorMessage
+																{errors}
+																name={`symbolConfig[${i}].symbologyOnOverflow[${j}].color`}
 															/>
 														</div>
 													</div>
@@ -289,12 +268,30 @@
 			</div>
 		</form>
 	</div>
-	<aside class="col-6 col-md-4">
-		<pre>{generatedJson}</pre>
+	<aside class="col-sm-6 col-md-4">
+		<pre>{JSON.stringify(generateFilledData($form), null, 2)}</pre>
 		<div class="text-center">
-			<button class="btn btn-primary" on:click={() => {navigator.clipboard.writeText(generatedJson); alert("config copied to clipboard")}}
-				>Copy Config</button
+			<button
+				class="btn btn-primary"
+				on:click={() => {
+					navigator.clipboard.writeText(generatedJson);
+					alert('config copied to clipboard');
+				}}>Copy Config</button
 			>
 		</div>
 	</aside>
 </div>
+
+<style>
+	form {
+		border: 1px solid #e9ecef;
+		border-radius: 8px;
+		padding: 16px;
+	}
+
+	aside pre {
+		padding: 16px;
+		background-color: #e9ecef;
+		border-radius: 8px;
+	}
+</style>
