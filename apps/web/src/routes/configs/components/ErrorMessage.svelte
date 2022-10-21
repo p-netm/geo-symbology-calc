@@ -1,10 +1,10 @@
-<script>
+<script lang="ts">
 	import lodash from 'lodash';
 	const { get } = lodash;
-	export let name;
+	export let name: string;
 	export let errors;
 
-	const error = get($errors, name);
+	$: error = get($errors, name);
 </script>
 
 {#if error}
