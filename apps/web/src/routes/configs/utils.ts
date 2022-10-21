@@ -63,10 +63,26 @@ export const configValidationSchema = yup.object().shape({
 		)
 		.ensure()
 		.min(1),
-	schedule: yup.string()
-	// .test('schedule', 'Schedule is not valid cron syntax', function (value?: string) {
-	//   return !!(value && nodeCron.validate(value));
-	// })
+	schedule: yup
+		.string()
+		.test('schedule', 'Schedule is not valid cron syntax', async function (value?: string) {
+			const res = await fetch('/configs/validate', {
+				method: 'POST',
+				body: JSON.stringify({
+					schedule: value
+				})
+			});
+			return await res
+				.json()
+				.then((body) => {
+					if (body.valid) {
+						return true;
+					}
+				})
+				.catch(() => {
+					return false;
+				});
+		})
 });
 
 export const generateFilledData = (formFields: FormFields) => {

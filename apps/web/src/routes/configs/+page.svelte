@@ -8,14 +8,15 @@
 		generateFilledData,
 		initialValues,
 		type FormFields,
-		PriorityLevel
+		PriorityLevel,
+		configValidationSchema
 	} from './utils';
 
 	const preDeterminedPriorityLevels = Object.values(PriorityLevel);
 
 	const { form, errors, handleChange, handleSubmit } = createForm({
 		initialValues,
-		validationSchema: undefined,
+		validationSchema: configValidationSchema,
 		onSubmit: (values) => {
 			const filled = generateFilledData(values);
 			generatedJson = JSON.stringify(filled, null, 2);
@@ -71,6 +72,7 @@
 						class="form-control"
 						name={`formPair.regFormId`}
 						on:change={handleChange}
+						on:blur={handleChange}
 						bind:value={$form.formPair.regFormId}
 					/>
 					<ErrorMessage {errors} name="formPair.regFormId" />
@@ -85,6 +87,7 @@
 						class="form-control"
 						name={`formPair.visitFormId`}
 						on:change={handleChange}
+						on:blur={handleChange}
 						bind:value={$form.formPair.visitFormId}
 					/>
 					<ErrorMessage {errors} name={`formPair.visitFormId`} />
@@ -99,6 +102,7 @@
 						class="form-control"
 						name="baseUrl"
 						on:change={handleChange}
+						on:blur={handleChange}
 						bind:value={$form.baseUrl}
 					/>
 					<ErrorMessage {errors} name="baseUrl" />
@@ -114,6 +118,8 @@
 						type="text"
 						disabled
 						class="form-control"
+						on:blur={handleChange}
+						on:change={handleChange}
 						bind:value={$form.apiToken}
 					/>
 					<ErrorMessage {errors} name="apiToken" />
@@ -130,6 +136,8 @@
 							name="schedule"
 							type="text"
 							class="form-control"
+							on:blur={handleChange}
+							on:change={handleChange}
 							bind:value={$form.schedule}
 						/>
 						<ErrorMessage {errors} name="schedule" />
@@ -151,6 +159,8 @@
 											name={`symbolConfig${i}.priorityLevel`}
 											id={`symbolConfig${i}.priorityLevel`}
 											class="form-select"
+											on:blur={handleChange}
+											on:change={handleChange}
 											bind:value={$form.symbolConfig[i].priorityLevel}
 											>{#each preDeterminedPriorityLevels as priorityLevel}
 												<option>{priorityLevel}</option>
@@ -168,6 +178,8 @@
 											id={`symbolConfig${i}.frequency`}
 											type="number"
 											class="form-control"
+											on:blur={handleChange}
+											on:change={handleChange}
 											bind:value={$form.symbolConfig[i].frequency}
 										/>
 										<ErrorMessage {errors} name={`symbolConfig${i}.frequency`} />
@@ -192,6 +204,8 @@
 																class="form-control"
 																name={`symbolConfig[${i}].symbologyOnOverflow[${j}].overFlowDays`}
 																id={`symbolConfig[${i}].symbologyOnOverflow[${j}].overFlowDays`}
+																on:blur={handleChange}
+																on:change={handleChange}
 																bind:value={$form.symbolConfig[i].symbologyOnOverflow[j]
 																	.overFlowDays}
 															/>
@@ -213,6 +227,8 @@
 																name={`symbolConfig[${i}].symbologyOnOverflow[${j}].color`}
 																id={`symbolConfig[${i}].symbologyOnOverflow[${j}].color`}
 																title="Pick color"
+																on:blur={handleChange}
+																on:change={handleChange}
 																bind:value={$form.symbolConfig[i].symbologyOnOverflow[j].color}
 															/>
 															<ErrorMessage

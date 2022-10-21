@@ -8,5 +8,5 @@
 </script>
 
 {#if error}
-	<small>{error}</small>
+	<small class="text-danger">{error}</small>
 {/if}
