@@ -44,7 +44,7 @@ export class OnaApiService {
     const formUrl = `${this.baseUrl}/${getFormPath}/${formId}`;
     return customFetch(formUrl, { ...this.getCommonFetchOptions() })
       .then((res) => {
-        this.logger?.(createVerboseLog(`Fetched form id: ${formId}`));
+        this.logger?.(createVerboseLog(`Fetched form wih form id: ${formId}`));
         return res.json() as Promise<Form>;
       })
       .catch((err) => {
@@ -65,7 +65,6 @@ export class OnaApiService {
     extraQueryObj: Record<string, string> = {},
     getSubmissionsPath: string = submittedDataEndpoint
   ) {
-    this.logger?.(createVerboseLog(`Start fetching submissions for form id: ${formId}`));
     const fullSubmissionsUrl = `${this.baseUrl}/${getSubmissionsPath}/${formId}`;
     const fetchSubmissionPromises: (() => Promise<FormSubmissionT[]>)[] = [];
     const pageSize = 100;
@@ -102,13 +101,13 @@ export class OnaApiService {
       page = page + 1;
     } while (page * pageSize < totalSubmissions);
     return await Promise.allSettled(fetchSubmissionPromises.map((x) => x())).then((jsonArrays) => {
-      const flattened = (
-        flatMap(jsonArrays).filter(
-          (obj) => obj.status === 'fulfilled'
-        ) as unknown as PromiseFulfilledResult<FormSubmissionT>[]
-      ).map((obj) => obj.value);
+      const fulfilledRequests = jsonArrays.filter(
+        (obj) => obj.status === 'fulfilled'
+      ) as unknown as PromiseFulfilledResult<FormSubmissionT>[];
+      const fulfilledRequestsValues = fulfilledRequests.map((obj) => obj.value);
+      const flattened = flatMap(fulfilledRequestsValues);
       this.logger?.(
-        createInfoLog(`Fetched ${flattened.length} submissions for form id: ${formId}`)
+        createInfoLog(`Fetched a total of ${flattened.length} submissions for form id: ${formId}`)
       );
       return flattened;
     });

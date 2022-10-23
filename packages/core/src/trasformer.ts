@@ -72,7 +72,11 @@ export async function transform(config: Omit<Config, 'schedule'>) {
   });
 
   return Promise.allSettled(updateRegFormSubmissionsPromises).then(() => {
-    logger?.(createInfoLog(`Finished processing `));
+    logger?.(
+      createInfoLog(
+        `Finished form pair {regFormId: ${config.formPair.regFormId}, visitFormId: ${config.formPair.visitFormId}}`
+      )
+    );
   });
 }
 

@@ -92,3 +92,65 @@ it('works correctly nominal case', async () => {
 
   expect(nock.pendingMocks()).toEqual([]);
 });
+
+it('error when fetching the registration form', async () => {
+  const loggerMock = jest.fn();
+  const configs = createConfigs(loggerMock);
+
+  // mock fetched firstform
+  nock(configs.baseUrl).get(`/${formEndpoint}/3623`).replyWithError('Could not find form with id');
+
+  await transform(configs).catch((err) => {
+    throw err;
+  });
+
+  expect(loggerMock.mock.calls).toEqual([
+    [
+      {
+        level: 'error',
+        message: 'Unable to fetch form with id: 3623'
+      }
+    ],
+    [
+      {
+        level: 'info',
+        message: 'Finished form pair {regFormId: 3623, visitFormId: 3624}'
+      }
+    ]
+  ]);
+
+  expect(nock.pendingMocks()).toEqual([]);
+});
+
+it('error when fetching the submission on the reg form', async () => {
+  const loggerMock = jest.fn();
+  const configs = createConfigs(loggerMock);
+
+  // mock fetched firstform
+  nock(configs.baseUrl).get(`/${formEndpoint}/3623`).reply(200, form3623);
+
+  // mock getting submissions for each of first form submissions
+  nock(configs.baseUrl)
+    .get(`/${submittedDataEndpoint}/3623`)
+    .query({ pageSize: 100, page: 1 })
+    .replyWithError('Could not find submissions');
+
+  await transform(configs).catch((err) => {
+    throw err;
+  });
+
+  expect(loggerMock.mock.calls).toEqual([
+    [{ level: 'verbose', message: 'Fetched form wih form id: 3623' }],
+    [
+      {
+        level: 'error',
+        message:
+          'Unable to fetch submissions for form id: 3623 page: https://test-api.ona.io/api/v1/data/3623?pageSize=100&page=1 with err : request to https://test-api.ona.io/api/v1/data/3623?pageSize=100&page=1 failed, reason: Could not find submissions'
+      }
+    ],
+    [{ level: 'info', message: 'Fetched a total of 0 submissions for form id: 3623' }],
+    [{ level: 'info', message: 'Finished form pair {regFormId: 3623, visitFormId: 3624}' }]
+  ]);
+
+  expect(nock.pendingMocks()).toEqual([]);
+});

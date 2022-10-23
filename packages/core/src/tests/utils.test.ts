@@ -1,4 +1,4 @@
-import { LogMessageLevels } from '../types';
+import { LogMessageLevels, RegFormSubmission } from '../types';
 import {
   colorDeciderFactory,
   createDebugLog,
@@ -30,7 +30,7 @@ describe('colorDecider', () => {
   const colorDecider = colorDeciderFactory(configs.symbolConfig, logFn);
 
   it('Marks very high priotiry facilities correctly', () => {
-    const submission = form3623Submissions[0];
+    const submission = form3623Submissions[0] as RegFormSubmission;
     expect(colorDecider(0, submission)).toEqual('green');
     expect(colorDecider(2, submission)).toEqual('green');
     expect(colorDecider(3, submission)).toEqual('green');
@@ -39,7 +39,7 @@ describe('colorDecider', () => {
   });
 
   it('Marks high priotiry facilities correctly', () => {
-    const submission = form3623Submissions[1];
+    const submission = form3623Submissions[1] as RegFormSubmission;
     expect(colorDecider(0, submission)).toEqual('green');
     expect(colorDecider(6, submission)).toEqual('green');
     expect(colorDecider(7, submission)).toEqual('green');
@@ -48,7 +48,7 @@ describe('colorDecider', () => {
   });
 
   it('Marks medium priotiry facilities correctly', () => {
-    const submission = form3623Submissions[3];
+    const submission = form3623Submissions[3] as RegFormSubmission;
     expect(colorDecider(0, submission)).toEqual('green');
     expect(colorDecider(13, submission)).toEqual('green');
     expect(colorDecider(14, submission)).toEqual('green');
@@ -57,7 +57,7 @@ describe('colorDecider', () => {
   });
 
   it('Marks low priotiry facilities correctly', () => {
-    const submission = form3623Submissions[2];
+    const submission = form3623Submissions[2] as RegFormSubmission;
     expect(colorDecider(0, submission)).toEqual('green');
     expect(colorDecider(29, submission)).toEqual('green');
     expect(colorDecider(30, submission)).toEqual('green');
