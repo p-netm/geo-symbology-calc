@@ -1,15 +1,30 @@
 import { getAllFormSubmissions, OnaApiService, upLoadMarkerColor } from './services';
-import { Config } from './types';
-import { colorDeciderFactory, createInfoLog, createVerboseLog, createWarnLog } from './utils';
+import { Config, RegFormSubmission, VisitFormSubmission } from './types';
+import {
+  colorDeciderFactory,
+  createErrorLog,
+  createInfoLog,
+  createVerboseLog,
+  createWarnLog
+} from './utils';
 import cron from 'node-cron';
 
+/** The main function that is able to consume a symbol config, and from it,
+ * pull the submissions from the api, after which its able to decide marker-color change
+ * and pushes the same to the api.
+ *
+ * @param config - symbol config
+ */
 export async function transform(config: Omit<Config, 'schedule'>) {
   const { formPair, symbolConfig, logger, baseUrl, apiToken } = config;
   const { regFormId: registrationFormId, visitFormId: visitformId } = formPair;
 
   const service = new OnaApiService(baseUrl, apiToken, logger);
 
-  const regFormGeoSubmissions = await getAllFormSubmissions(service, registrationFormId);
+  const regFormGeoSubmissions = await getAllFormSubmissions<RegFormSubmission>(
+    service,
+    registrationFormId
+  );
   const colorDecider = colorDeciderFactory(symbolConfig, logger);
 
   const updateRegFormSubmissionsPromises = regFormGeoSubmissions.map(async (regFormSubmission) => {
@@ -22,7 +37,7 @@ export async function transform(config: Omit<Config, 'schedule'>) {
     };
 
     return service
-      .fetchPaginatedFormSubmissions(visitformId, 100, query)
+      .fetchPaginatedFormSubmissions<VisitFormSubmission>(visitformId, 100, query)
       .then((visitSubmissions) => {
         const mostRecentSubmission = visitSubmissions[0];
         let recentVisitDiffToNow = Infinity;
@@ -56,13 +71,18 @@ export async function transform(config: Omit<Config, 'schedule'>) {
       });
   });
 
-  return Promise.all(updateRegFormSubmissionsPromises).then(() => {
+  return Promise.allSettled(updateRegFormSubmissionsPromises).then(() => {
     logger?.(createInfoLog(`Finished processing `));
   });
 }
 
+/** Wrapper around the transform function, calls transform on a schedule */
 export function transformOnSchedule(config: Config) {
   const { schedule, ...restConfigs } = config;
 
-  cron.schedule(schedule, () => transform(restConfigs));
+  cron.schedule(schedule, () =>
+    transform(restConfigs).catch((err) => {
+      config.logger?.(createErrorLog(err.message));
+    })
+  );
 }

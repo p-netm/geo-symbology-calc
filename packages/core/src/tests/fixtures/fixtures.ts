@@ -11,8 +11,9 @@ export const createConfigs = (loggerMock: jest.Mock): Config => ({
     regFormId: '3623',
     visitFormId: '3624'
   },
-  symbolConfig: {
-    [PriorityLevel.VERY_HIGH]: {
+  symbolConfig: [
+    {
+      priorityLevel: PriorityLevel.VERY_HIGH,
       frequency: 3,
       symbologyOnOverflow: [
         {
@@ -29,7 +30,8 @@ export const createConfigs = (loggerMock: jest.Mock): Config => ({
         }
       ]
     },
-    [PriorityLevel.HIGH]: {
+    {
+      priorityLevel: PriorityLevel.HIGH,
       frequency: 7,
       symbologyOnOverflow: [
         {
@@ -42,7 +44,8 @@ export const createConfigs = (loggerMock: jest.Mock): Config => ({
         }
       ]
     },
-    [PriorityLevel.MEDIUM]: {
+    {
+      priorityLevel: PriorityLevel.MEDIUM,
       frequency: 14,
       symbologyOnOverflow: [
         {
@@ -55,7 +58,8 @@ export const createConfigs = (loggerMock: jest.Mock): Config => ({
         }
       ]
     },
-    [PriorityLevel.LOW]: {
+    {
+      priorityLevel: PriorityLevel.LOW,
       frequency: 30,
       symbologyOnOverflow: [
         {
@@ -68,8 +72,9 @@ export const createConfigs = (loggerMock: jest.Mock): Config => ({
         }
       ]
     }
-  },
+  ],
   logger: loggerMock,
   apiToken,
-  baseUrl: 'https://test-api.ona.io'
+  baseUrl: 'https://test-api.ona.io',
+  schedule: '* * * * *'
 });

@@ -1,5 +1,12 @@
 import lodash from 'lodash';
-import { Config, LogFn, LogMessageLevels, PriorityLevel, SymbologyConfig } from './types';
+import {
+  Config,
+  LogFn,
+  LogMessageLevels,
+  PriorityLevel,
+  RegFormSubmission,
+  SymbologyConfig
+} from './types';
 import * as yup from 'yup';
 import nodeCron from 'node-cron';
 
@@ -28,7 +35,7 @@ export const colorDeciderFactory = (symbolConfig: SymbologyConfig, logger?: LogF
 
   const colorDecider = (
     recentVisitDiffToNow: number | typeof Infinity,
-    submission: Record<string, unknown>
+    submission: RegFormSubmission
   ) => {
     const thisFacilityPriority = submission.priority_level as PriorityLevel | undefined;
 
