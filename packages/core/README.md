@@ -81,7 +81,7 @@ export interface Config {
  // base url where the api instance is deployed
  baseUrl: string;
  // cron-like syntax that represents when the pipeline represented by this config runs.
- // this can be more easily generated using an online tool like
+ // this can be more easily generated using an online tool like https://crontab.cronhub.io/
  schedule: CronTabString;
 }
 
