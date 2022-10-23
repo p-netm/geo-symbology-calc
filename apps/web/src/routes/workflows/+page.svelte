@@ -76,7 +76,7 @@
 					{/each}
 				</tbody>
 			</table>
-			<span class="card-text">Schedule:</span><span class="card-text">{convertCronToHuman(config.schedule)}</span>
+			<span class="card-text d-inline-block me-2 text-muted">Schedule:</span><span class="card-text">{convertCronToHuman(config.schedule)}</span>
 		</div>
 		<div class="card-footer">
 			<button on:click={() => manualTrigger(config.baseUrl, config.formPair.regFormId, config.formPair.visitFormId)}  class="btn btn-outline-primary btn-sm">Manually Trigger workflow</button>
