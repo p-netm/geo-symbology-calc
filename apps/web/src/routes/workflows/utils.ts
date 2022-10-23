@@ -13,7 +13,7 @@ export function parseForTable(singleConfig: ClientSideSingleSymbolConfig) {
 			if (tableRows[index] === undefined) {
 				tableRows[index] = [];
 			}
-			const symbologyOnOverFlow = symbologyOnOverflow ?? [];
+			const symbologyOnOverFlow = symbologyOnOverflow.slice() ?? [];
 			// sort in ascending order
 			tableRows[index].push(priorityLevel);
 			tableRows[index].push(frequency);
