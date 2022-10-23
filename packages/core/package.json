@@ -7,7 +7,7 @@
   "scripts": {
     "lint": "eslint './**/*.{js,ts}'",
     "format": "eslint './**/*.{js,ts}' --fix",
-    "test": "jest"
+    "test": "jest -c ../../jest.config.js"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.186",

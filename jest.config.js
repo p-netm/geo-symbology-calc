@@ -1,7 +1,13 @@
 module.exports = {
-  roots: ['apps', 'packages'],
+  rootDir: './',
+  roots: ['packages'],
   testMatch: ['**/__tests__/**/*.+(ts|js)', '**/?(*.)+(spec|test).+(ts|js)'],
   transform: {
-    '^.+\\.(ts)$': 'ts-jest'
-  }
+    '^.+\\.(ts|tsx)?$': 'ts-jest',
+    '^.+\\.(js|jsx)$': 'babel-jest'
+  },
+  setupFiles: ['./setupTests'],
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  transformIgnorePatterns: ['<rootDir>/node_modules/']
 };
