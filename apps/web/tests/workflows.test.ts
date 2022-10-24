@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test';
 
 test('test', async ({ page }) => {
+	// Go to http://localhost:4173/
+	await page.goto('http://localhost:4173/');
+
 	// Click #navbarNav >> text=Workflows
 	await page.locator('#navbarNav >> text=Workflows').click();
 	await expect(page).toHaveURL('http://localhost:4173/workflows');
