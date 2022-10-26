@@ -91,8 +91,6 @@ For instance, lets look at how the config for running the rules shown in the tab
 
 ![image](https://user-images.githubusercontent.com/28119869/197401889-45a8c769-26b1-4a83-8874-884378ea3c6b.png)
 
-with a schedule where this pipeline should be run once on monday every week would be specified by the config:
-
 ```
 {
   formPair: {
@@ -163,8 +161,6 @@ with a schedule where this pipeline should be run once on monday every week woul
   ],
   apiToken: "secret",
   baseUrl: 'https://stage-api.ona.io',
-  schedule: '0 0 * * 1'
+  schedule: '0 0 * * 1' // run once on monday every week
 }
 ```
-
-The accompanying web application should hopefully make the process of creating this conig easier.
