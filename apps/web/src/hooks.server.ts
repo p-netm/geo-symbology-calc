@@ -1,4 +1,4 @@
-import { allSymbologyConfigs } from '$lib/server/config';
+import { allSymbologyConfigs } from '$lib/server/appConfig';
 import { transformOnSchedule } from '@onaio/symbology-calc-core';
 
 function startPreconfiguredPipelins() {
