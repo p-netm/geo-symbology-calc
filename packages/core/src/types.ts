@@ -13,7 +13,7 @@ export interface LogMessageObject {
   message: string;
 }
 
-export type LogFn = (message: LogMessageObject) => undefined;
+export type LogFn = (message: LogMessageObject) => void;
 export type CronTabString = string;
 
 /** Describes the configs for a single pipeline */
