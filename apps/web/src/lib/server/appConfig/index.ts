@@ -1,8 +1,15 @@
 import { validateConfigs } from '@onaio/symbology-calc-core/src/utils';
 import config from 'config';
 import type { SingleApiSymbolConfig } from 'src/lib/shared/types';
+import { geoSymbolLogger } from '../logger/winston';
 
-const allSymbologyConfigs = config.get('allSymbologyConfigs') as SingleApiSymbolConfig[];
+const rawSymbologyConfigs = config.get('allSymbologyConfigs') as SingleApiSymbolConfig[];
+const allSymbologyConfigs = rawSymbologyConfigs.map((config) => {
+	return {
+		...config,
+		logger: geoSymbolLogger
+	};
+});
 
 allSymbologyConfigs.forEach(validateConfigs);
 
