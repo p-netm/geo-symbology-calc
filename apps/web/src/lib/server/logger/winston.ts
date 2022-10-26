@@ -1,5 +1,4 @@
 import { createLogger, transports, format } from 'winston';
-import.meta.env.PROD;
 import type { LogFn } from '@onaio/symbology-calc-core';
 import config from 'config';
 
