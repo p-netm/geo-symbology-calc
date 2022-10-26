@@ -42,6 +42,6 @@ You can preview the production build with `yarn run preview`.
 All configurations reside in the `config` folder. To add a pipeline as configuration you should
 
 1. create a json config that represents the pipeline, you can do so
-   1. manually by following the guide [here](../../packages/core/README.md#Symbol config).
+   1. manually by following the guide [here](../../packages/core/README.md#symbol-config).
    2. Running this web app, navigating to `/configs`, and filling out the form, you should then be able to copy the json
 2. copy the `config/default.json` file to `config/local.json` and update the `"allSymbologyConfigs"` config prop

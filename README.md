@@ -46,4 +46,4 @@ yarn dev
 
 ### Configuration
 
-The web app's configs are stored in the `apps/web/config` directory. There is a `default.json` file that you can use as a template. You can copy to a `local.json` file, modify the values to your liking and Run the app. [Read more](/apps/web/README.md)
+The web app's configs are stored in the `apps/web/config` directory. There is a `default.json` file that you can use as a template. You can copy to a `local.json` file, modify the values to your liking and Run the app. [Read more](/apps/web/README.md#envs-and-configuration)
