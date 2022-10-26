@@ -39,6 +39,7 @@
 		"node-cron": "^3.0.2",
 		"svelte-forms-lib": "^2.0.1",
 		"svelte-yup": "^1.0.5",
+		"winston": "^3.8.2",
 		"yup": "^0.32.11"
 	},
 	"type": "module"
