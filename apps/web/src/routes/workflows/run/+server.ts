@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { allSymbologyConfigs } from '$lib/server/config';
+import { allSymbologyConfigs } from '$lib/server/appConfig';
 import lodash from 'lodash';
 import { transform, type Config } from '@onaio/symbology-calc-core';
 
@@ -20,7 +20,6 @@ export function GET({ url }) {
 	const configKeyOfInterest = createStringKey(baseUrl, regFormId, visitFormId);
 
 	const configOfInterest = associatedConfigs[configKeyOfInterest];
-	console.log({ configOfInterest, associatedConfigs, configKeyOfInterest });
 	if (!configOfInterest) {
 		throw error(500, 'Oops, something went wrong while trying to load config');
 	}
