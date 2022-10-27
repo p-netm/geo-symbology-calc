@@ -4,14 +4,19 @@
 	import ErrorMessage from './components/ErrorMessage.svelte';
 	import ScheduleExplainer from './components/ScheduleExplainer.svelte';
 	import {
-		defaultPriorityConfig,
+		defaultPriorityFormValues,
 		generateFilledData,
 		initialValues,
 		type FormFields,
 		PriorityLevel,
-		configValidationSchema
+		configValidationSchema,
+		defaultColorCodeFormValues,
+		defaultPriorityErrorValues,
+		defaultColorcodeErrorValue
 	} from './utils';
+	import lodash from 'lodash';
 
+	const {cloneDeep} = lodash
 	const preDeterminedPriorityLevels = Object.values(PriorityLevel);
 
 	const { form, errors, handleChange, handleSubmit } = createForm({
@@ -26,8 +31,8 @@
 	$: generatedJson = JSON.stringify(generateFilledData($form), null, 2);
 
 	const addPriorityLevel = () => {
-		$form.symbolConfig = $form.symbolConfig.concat(defaultPriorityConfig);
-		$errors.symbolConfig = $errors.symbolConfig.concat(defaultPriorityConfig);
+		$form.symbolConfig = $form.symbolConfig.concat(cloneDeep(defaultPriorityFormValues));
+		$errors.symbolConfig = $errors.symbolConfig.concat(cloneDeep(defaultPriorityErrorValues));
 	};
 
 	const removePriorityLevel = (i: number) => () => {
@@ -36,16 +41,10 @@
 	};
 
 	const addColorCodeConfig = (i: number) => () => {
-		$form.symbolConfig[i].symbologyOnOverflow = $form.symbolConfig[i].symbologyOnOverflow.concat({
-			overFlowDays: undefined,
-			color: ''
-		});
+		$form.symbolConfig[i].symbologyOnOverflow = $form.symbolConfig[i].symbologyOnOverflow.concat(cloneDeep(defaultColorCodeFormValues));
 		$errors.symbolConfig[i].symbologyOnOverflow = $errors.symbolConfig[
 			i
-		].symbologyOnOverflow.concat({
-			overFlowDays: undefined,
-			color: ''
-		});
+		].symbologyOnOverflow.concat(defaultColorcodeErrorValue);
 	};
 
 	const removeColorCodeConfig =
@@ -156,8 +155,8 @@
 									<label for="baseUrl" class="col-sm-3">Priority Level</label>
 									<div class="col-sm-9">
 										<select
-											name={`symbolConfig${i}.priorityLevel`}
-											id={`symbolConfig${i}.priorityLevel`}
+											name={`symbolConfig[${i}].priorityLevel`}
+											id={`symbolConfig[${i}].priorityLevel`}
 											class="form-select"
 											on:blur={handleChange}
 											on:change={handleChange}
@@ -166,23 +165,23 @@
 												<option>{priorityLevel}</option>
 											{/each}
 										</select>
-										<ErrorMessage {errors} name={`symbolConfig${i}.priorityLevel`} />
+										<ErrorMessage {errors} name={`symbolConfig[${i}].priorityLevel`} />
 									</div>
 								</div>
 
 								<div class="form-group row mb-2">
-									<label for={`symbolConfig${i}.frequency`} class="col-sm-3">Frequency</label>
+									<label for={`symbolConfig[${i}].frequency`} class="col-sm-3">Frequency</label>
 									<div class="col-sm-9">
 										<input
-											name={`symbolConfig${i}.frequency`}
-											id={`symbolConfig${i}.frequency`}
+											name={`symbolConfig[${i}].frequency`}
+											id={`symbolConfig[${i}].frequency`}
 											type="number"
 											class="form-control"
 											on:blur={handleChange}
 											on:change={handleChange}
 											bind:value={$form.symbolConfig[i].frequency}
 										/>
-										<ErrorMessage {errors} name={`symbolConfig${i}.frequency`} />
+										<ErrorMessage {errors} name={`symbolConfig[${i}].frequency`} />
 									</div>
 								</div>
 

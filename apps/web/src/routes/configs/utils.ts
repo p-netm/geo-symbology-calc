@@ -18,16 +18,22 @@ export interface FormFields {
 	symbolConfig: {
 		priorityLevel?: PriorityLevel;
 		frequency?: number;
-		symbologyOnOverflow: { overFlowDays?: number; color: string }[];
+		symbologyOnOverflow: { overFlowDays?: number; color?: string }[];
 	}[];
 	schedule: string;
 }
 
-export const defaultColorCodeConfig = { overFlowDays: undefined, color: '' };
-export const defaultPriorityConfig = {
+export const defaultColorCodeFormValues = { overFlowDays: undefined, color: undefined };
+export const defaultColorcodeErrorValue = { overFlowDays: undefined, color: undefined }
+export const defaultPriorityFormValues = {
+	priorityLevel: PriorityLevel.VERY_HIGH,
+	frequency: 0,
+	symbologyOnOverflow: [{...defaultColorCodeFormValues}]
+};
+export const defaultPriorityErrorValues = {
 	priorityLevel: undefined,
 	frequency: undefined,
-	symbologyOnOverflow: [defaultColorCodeConfig]
+	symbologyOnOverflow: [{...defaultColorcodeErrorValue}]
 };
 
 export const initialValues: FormFields = {
@@ -37,7 +43,7 @@ export const initialValues: FormFields = {
 		visitFormId: ''
 	},
 	apiToken: '<Replace with api token>',
-	symbolConfig: [defaultPriorityConfig],
+	symbolConfig: [defaultPriorityFormValues],
 	schedule: ''
 };
 

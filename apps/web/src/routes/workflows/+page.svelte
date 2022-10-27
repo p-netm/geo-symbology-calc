@@ -17,7 +17,7 @@
 		return await fetch(fullUrl)
 			.then(() => {
 				alert(
-					'pipeline triggered manually, Please note: This does not mean the pipeline executed successfully'
+					'Pipeline triggered manually and is running asyncronously, Please note: This does not mean the pipeline executed successfully'
 				);
 			})
 			.catch((err) => {
