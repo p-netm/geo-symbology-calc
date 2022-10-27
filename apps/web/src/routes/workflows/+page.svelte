@@ -52,7 +52,7 @@
 		<PageHeader pageTitle="Configured Pipeline list" />
 		{#each data.configs as config}
 			{@const { tableHeaders, tableRows, colorsColSpan } = parseForTable(config)}
-			<div class="card text-center mx-2">
+			<div class="card text-center my-3">
 				<div class="card-header">
 					Color symbology config for: {config.baseUrl}
 				</div>
