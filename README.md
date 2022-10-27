@@ -32,6 +32,9 @@ To build all apps and packages, run the following command:
 # in root dir
 yarn install
 yarn build
+
+# you can then preview the production build by
+yarn preview
 ```
 
 ### Develop
