@@ -15,6 +15,9 @@ const logger = createLogger({
 		new transports.File({
 			filename: config.get('combinedLogFilePath'),
 			level: 'verbose'
+		}),
+		new transports.Console({
+			level: 'silly'
 		})
 	],
 	// handle Uncaught Exceptions
@@ -29,15 +32,6 @@ const logger = createLogger({
 		loggerFormatFn()
 	)
 });
-
-if (import.meta.env.DEV) {
-	logger.add(
-		new transports.Console({
-			level: 'silly',
-			format: format.combine(format.colorize(), loggerFormatFn())
-		})
-	);
-}
 
 const geoSymbolLogger: LogFn = (messageObj) => {
 	const { message, level } = messageObj;
