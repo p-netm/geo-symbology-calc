@@ -40,6 +40,12 @@ yarn build
 yarn preview
 ```
 
+#### Run with docker
+
+```shell
+docker compose up
+```
+
 ### Develop
 
 To develop all apps and packages, run the following command:
