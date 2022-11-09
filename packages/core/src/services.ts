@@ -1,5 +1,11 @@
 import lodash from 'lodash';
-import { editSumbissionEdnpoint, formEndpoint, submittedDataEndpoint } from './constants';
+import {
+  editSumbissionEdnpoint,
+  formEndpoint,
+  markerColorAccessor,
+  numOfSubmissionsAccessor,
+  submittedDataEndpoint
+} from './constants';
 import { v4 } from 'uuid';
 import { BaseFormSubmission, Color, Form, LogFn, RegFormSubmission } from './types';
 import { createErrorLog, createInfoLog, createVerboseLog } from './utils';
@@ -166,7 +172,7 @@ export async function getAllFormSubmissions<FormSubmissionT extends BaseFormSubm
   return service
     .fetchSingleForm(formId)
     .then((form) => {
-      const submissionCount = form.num_of_submissions;
+      const submissionCount = form[numOfSubmissionsAccessor];
       return service.fetchPaginatedFormSubmissions<FormSubmissionT>(formId, submissionCount);
     })
     .catch((err) => {
@@ -194,7 +200,7 @@ export async function upLoadMarkerColor(
 ) {
   const newSubmission = {
     ...submission,
-    ['marker-color']: colorCode
+    [markerColorAccessor]: colorCode
   };
   return service.editSubmission(formId, newSubmission).catch((err) => {
     logger?.(

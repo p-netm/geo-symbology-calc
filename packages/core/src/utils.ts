@@ -9,6 +9,7 @@ import {
 } from './types';
 import * as yup from 'yup';
 import nodeCron from 'node-cron';
+import { priorityLevelAccessor } from './constants';
 
 export const createInfoLog = (message: string) => ({ level: LogMessageLevels.INFO, message });
 export const createWarnLog = (message: string) => ({ level: LogMessageLevels.WARN, message });
@@ -37,7 +38,7 @@ export const colorDeciderFactory = (symbolConfig: SymbologyConfig, logger?: LogF
     recentVisitDiffToNow: number | typeof Infinity,
     submission: RegFormSubmission
   ) => {
-    const thisFacilityPriority = submission.priority_level as PriorityLevel | undefined;
+    const thisFacilityPriority = submission[priorityLevelAccessor] as PriorityLevel | undefined;
 
     if (!thisFacilityPriority) {
       logger?.(createWarnLog(`facility _id: ${submission._id} does not have a priority_level`));

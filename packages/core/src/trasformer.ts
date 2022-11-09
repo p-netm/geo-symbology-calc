@@ -8,6 +8,7 @@ import {
   createWarnLog
 } from './utils';
 import cron from 'node-cron';
+import { dateOfVisitAccessor, markerColorAccessor } from './constants';
 
 /** The main function that is able to consume a symbol config, and from it,
  * pull the submissions from the api, after which its able to decide marker-color change
@@ -33,7 +34,7 @@ export async function transform(config: Omit<Config, 'schedule'>) {
     // fetch the most recent visit submission for this facility
     const query = {
       query: `{"facility": ${facilityId}}`, // filter visit submissions for this facility
-      sort: '{"date_of_visit": -1}' // sort in descending, most recent first.
+      sort: `{"${dateOfVisitAccessor}": -1}` // sort in descending, most recent first.
     };
 
     return service
@@ -48,7 +49,7 @@ export async function transform(config: Omit<Config, 'schedule'>) {
             )
           );
 
-          const dateOfVisit = Date.parse(mostRecentSubmission.date_of_visit);
+          const dateOfVisit = Date.parse(mostRecentSubmission[dateOfVisitAccessor]);
           const now = Date.now();
           const msInADay = 1000 * 60 * 60 * 24;
           recentVisitDiffToNow = Math.ceil((now - dateOfVisit) / msInADay);
@@ -58,7 +59,7 @@ export async function transform(config: Omit<Config, 'schedule'>) {
 
         const color = colorDecider(recentVisitDiffToNow, regFormSubmission);
         if (color) {
-          if (regFormSubmission['marker-color'] === color) {
+          if (regFormSubmission[markerColorAccessor] === color) {
             logger?.(
               createInfoLog(
                 `facility _id: ${facilityId} submission already has the correct color, no action needed`
