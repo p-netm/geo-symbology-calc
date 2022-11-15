@@ -14,12 +14,6 @@ export const logCalls = [
   ],
   [
     {
-      level: 'info',
-      message: 'Fetched a total of 10 submissions for form id: 3623'
-    }
-  ],
-  [
-    {
       level: 'verbose',
       message: 'Start evaluating symbology for submission _id: 304870'
     }

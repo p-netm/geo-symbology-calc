@@ -1,3 +1,5 @@
+import { numOfSubmissionsAccessor } from './constants';
+
 export enum LogMessageLevels {
   ERROR = 'error',
   WARN = 'warn',
@@ -35,6 +37,8 @@ export interface Config {
   baseUrl: string;
   // cron-like syntax that represents when the pipeline represented by this config runs.
   schedule: CronTabString;
+  // how many registration form submissions to process at a time.
+  regFormSubmissionChunks: number;
 }
 
 export enum PriorityLevel {
@@ -97,5 +101,5 @@ export interface VisitFormSubmission extends BaseFormSubmission {
 
 export interface Form {
   formid: number;
-  num_of_submissions: number;
+  [numOfSubmissionsAccessor]: number;
 }

@@ -1,16 +1,13 @@
-import lodash from 'lodash';
+import { flatMap } from 'lodash-es';
 import {
   editSumbissionEdnpoint,
   formEndpoint,
   markerColorAccessor,
-  numOfSubmissionsAccessor,
   submittedDataEndpoint
 } from './constants';
 import { v4 } from 'uuid';
 import { BaseFormSubmission, Color, Form, LogFn, RegFormSubmission } from './types';
-import { createErrorLog, createInfoLog, createVerboseLog } from './utils';
-
-const { flatMap } = lodash;
+import { createErrorLog, createInfoLog, createVerboseLog, Result } from './utils';
 
 export const customFetch: typeof fetch = async (...rest) => {
   const response = await fetch(...rest);
@@ -51,31 +48,70 @@ export class OnaApiService {
     return customFetch(formUrl, { ...this.getCommonFetchOptions() })
       .then((res) => {
         this.logger?.(createVerboseLog(`Fetched form wih form id: ${formId}`));
-        return res.json() as Promise<Form>;
+        return res.json().then((form: Form) => {
+          return Result.ok<Form>(form);
+        });
       })
       .catch((err) => {
-        this.logger?.(createErrorLog(`Unable to fetch form with id: ${formId}`));
-        throw err;
+        this.logger?.(
+          createErrorLog(`Operation to fetch form: ${formId}, failed with err: ${err}`)
+        );
+        return Result.fail<Form>(err);
       });
   }
 
-  /** fetches submissions for form with the givenId
+  /** Wrapper around generator function that fetches form submission for form with the given id.
    * @param formId - form id whose submissions we should fetch
-   * @param totalSubmissions - Total number of submissions
+   * @param totalSubmissions - Total number of submissions, to help with terminating pagination
    * @param extraQueryObj - extra search query params
+   * @param pageSize - the number of records to fetch.
    * @param getSubmissionsPath - endpoint
    */
   async fetchPaginatedFormSubmissions<FormSubmissionT extends BaseFormSubmission>(
     formId: string,
     totalSubmissions: number,
     extraQueryObj: Record<string, string> = {},
+    pageSize = 100,
+    getSubmissionsPath: string = submittedDataEndpoint
+  ) {
+    const formSubmissionIterator = this.fetchPaginatedFormSubmissionsGenerator<FormSubmissionT>(
+      formId,
+      totalSubmissions,
+      extraQueryObj,
+      pageSize,
+      getSubmissionsPath
+    );
+
+    const formSubmissions: FormSubmissionT[][] = [];
+    for await (const formSubmissionResult of formSubmissionIterator) {
+      if (formSubmissionResult.isSuccess) {
+        const value = formSubmissionResult.getValue();
+        formSubmissions.push(value);
+      }
+    }
+    const flattened = flatMap(formSubmissions);
+    return Result.ok(flattened);
+  }
+
+  /** An async generator function that fetches submissions for form with the givenId
+   * @param formId - form id whose submissions we should fetch
+   * @param totalSubmissions - Total number of submission, helps with pagination termination
+   * @param extraQueryObj - extra search query params
+   * @param pageSize - the number of records to fetch.
+   * @param getSubmissionsPath - endpoint
+   */
+  async *fetchPaginatedFormSubmissionsGenerator<FormSubmissionT extends BaseFormSubmission>(
+    formId: string,
+    totalSubmissions: number,
+    extraQueryObj: Record<string, string> = {},
+    pageSize = 100,
     getSubmissionsPath: string = submittedDataEndpoint
   ) {
     const fullSubmissionsUrl = `${this.baseUrl}/${getSubmissionsPath}/${formId}`;
-    const fetchSubmissionPromises: (() => Promise<FormSubmissionT[]>)[] = [];
-    const pageSize = 100;
     let page = 1;
+
     do {
+      console.log({ page, pageSize });
       const query = {
         pageSize: `${pageSize}`,
         page: `${page}`,
@@ -83,40 +119,28 @@ export class OnaApiService {
       };
       const sParams = new URLSearchParams(query);
       const paginatedSubmissionsUrl = `${fullSubmissionsUrl}?${sParams.toString()}`;
-      fetchSubmissionPromises.push(() =>
-        customFetch(paginatedSubmissionsUrl, { ...this.getCommonFetchOptions() })
-          .then((res) => {
-            return (res.json() as Promise<FormSubmissionT[]>).then((res) => {
-              this.logger?.(
-                createInfoLog(
-                  `Fetched ${res.length} submissions for form id: ${formId} page: ${paginatedSubmissionsUrl}`
-                )
-              );
-              return res;
-            });
-          })
-          .catch((err) => {
+
+      page = page + 1;
+      yield await customFetch(paginatedSubmissionsUrl, { ...this.getCommonFetchOptions() })
+        .then((res) => {
+          return (res.json() as Promise<FormSubmissionT[]>).then((res) => {
             this.logger?.(
-              createErrorLog(
-                `Unable to fetch submissions for form id: ${formId} page: ${paginatedSubmissionsUrl} with err : ${err.message}`
+              createInfoLog(
+                `Fetched ${res.length} submissions for form id: ${formId} page: ${paginatedSubmissionsUrl}`
               )
             );
-            throw err;
-          })
-      );
-      page = page + 1;
-    } while (page * pageSize < totalSubmissions);
-    return await Promise.allSettled(fetchSubmissionPromises.map((x) => x())).then((jsonArrays) => {
-      const fulfilledRequests = jsonArrays.filter(
-        (obj) => obj.status === 'fulfilled'
-      ) as unknown as PromiseFulfilledResult<FormSubmissionT>[];
-      const fulfilledRequestsValues = fulfilledRequests.map((obj) => obj.value);
-      const flattened = flatMap(fulfilledRequestsValues);
-      this.logger?.(
-        createInfoLog(`Fetched a total of ${flattened.length} submissions for form id: ${formId}`)
-      );
-      return flattened;
-    });
+            return Result.ok(res);
+          });
+        })
+        .catch((err) => {
+          this.logger?.(
+            createErrorLog(
+              `Unable to fetch submissions for form id: ${formId} page: ${paginatedSubmissionsUrl} with err : ${err.message}`
+            )
+          );
+          return Result.fail<FormSubmissionT[]>(err);
+        });
+    } while (page * pageSize <= totalSubmissions);
   }
 
   /** makes single reqest to edit a single form submission
@@ -142,47 +166,31 @@ export class OnaApiService {
       }
     };
     const fullEditSubmissionUrl = `${this.baseUrl}/${editSubmissionPath}`;
+
     return await customFetch(fullEditSubmissionUrl, {
       ...this.getCommonFetchOptions(),
       method: 'POST',
       body: JSON.stringify(payload)
     })
       .then((res) => {
-        this.logger?.(createVerboseLog(`Edited submission with _id: ${submissionPayload._id}`));
-        return res.json();
+        this.logger?.(
+          createVerboseLog(
+            `Edited submission with _id: ${submissionPayload._id} for form: ${formId}`
+          )
+        );
+        return res.json().then((response) => {
+          return Result.ok<Record<string, string>>(response);
+        });
       })
       .catch((err) => {
         this.logger?.(
-          createErrorLog(`Failed to edit submission with _id: ${submissionPayload._id}`)
+          createErrorLog(
+            `Failed to edit sumbission with _id: ${submissionPayload._id} for form with id: ${formId} with err: ${err.message}`
+          )
         );
-        throw err;
+        return Result.fail(err);
       });
   }
-}
-
-/** wrapper that helps fetch all submissions made for a certain form
- * @param service - Service class object
- * @param formId - pull submissions for form with this id.
- */
-export async function getAllFormSubmissions<FormSubmissionT extends BaseFormSubmission>(
-  service: OnaApiService,
-  formId: string,
-  logger?: LogFn
-) {
-  return service
-    .fetchSingleForm(formId)
-    .then((form) => {
-      const submissionCount = form[numOfSubmissionsAccessor];
-      return service.fetchPaginatedFormSubmissions<FormSubmissionT>(formId, submissionCount);
-    })
-    .catch((err) => {
-      logger?.(
-        createErrorLog(
-          `Failed to get all form submissions for form Id: ${formId} with err: ${err.message}`
-        )
-      );
-      return [] as FormSubmissionT[];
-    });
 }
 
 /** wrapper that helps edit the marker color field in a submission push it to the api
@@ -195,18 +203,11 @@ export async function upLoadMarkerColor(
   service: OnaApiService,
   formId: string,
   submission: RegFormSubmission,
-  colorCode: Color,
-  logger?: LogFn
+  colorCode: Color
 ) {
   const newSubmission = {
     ...submission,
     [markerColorAccessor]: colorCode
   };
-  return service.editSubmission(formId, newSubmission).catch((err) => {
-    logger?.(
-      createErrorLog(
-        `Failed to edit sumbission with _id: ${submission._id} for form with id: ${formId} with err: ${err.message}`
-      )
-    );
-  });
+  return service.editSubmission(formId, newSubmission);
 }
