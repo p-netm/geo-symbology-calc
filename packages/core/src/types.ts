@@ -38,7 +38,7 @@ export interface Config {
   // cron-like syntax that represents when the pipeline represented by this config runs.
   schedule: CronTabString;
   // how many registration form submissions to process at a time.
-  regFormSubmissionChunks: number;
+  regFormSubmissionChunks?: number;
 }
 
 export enum PriorityLevel {

@@ -1,6 +1,6 @@
 import { flatMap } from 'lodash-es';
 import {
-  editSumbissionEdnpoint,
+  editSubmissionEndpoint,
   formEndpoint,
   markerColorAccessor,
   submittedDataEndpoint
@@ -111,7 +111,6 @@ export class OnaApiService {
     let page = 1;
 
     do {
-      console.log({ page, pageSize });
       const query = {
         pageSize: `${pageSize}`,
         page: `${page}`,
@@ -151,7 +150,7 @@ export class OnaApiService {
   async editSubmission(
     formId: string,
     submissionPayload: Record<string, unknown>,
-    editSubmissionPath: string = editSumbissionEdnpoint
+    editSubmissionPath: string = editSubmissionEndpoint
   ) {
     const oldInstanceId = submissionPayload['meta/instanceID'];
     const newInstanceId = `uuid:${v4()}`;
