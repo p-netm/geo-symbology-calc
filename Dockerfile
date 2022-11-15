@@ -1,22 +1,34 @@
-FROM node:hydrogen-alpine
+FROM node:hydrogen-alpine as build
 
 RUN corepack enable
+
 RUN apk add --no-cache libc6-compat
 
-COPY ./ /project 
-WORKDIR /project
+COPY ./ /repo 
 
-ENV NODE_CONFIG_DIR=/project/apps/web/config
+WORKDIR /repo
+
+ENV NODE_CONFIG_DIR=/repo/apps/web/config
+
 RUN yarn install
+
 RUN yarn build
 
 RUN yarn workspaces focus -A --production
+
+FROM node:hydrogen-alpine
+
+COPY --from=build /repo /usr/src/symbology
+
+WORKDIR /usr/src/symbology
+
+ENV NODE_CONFIG_DIR=/usr/src/symbology/apps/web/config
 
 # Use tini for NodeJS application https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#handling-kernel-signals
 RUN apk add --no-cache tini curl
 
 EXPOSE 3000
 
-CMD ["node", "apps/web/build"]
+CMD ["node", "/usr/src/symbology/apps/web/build"]
 
 ENTRYPOINT ["/sbin/tini", "--"]
