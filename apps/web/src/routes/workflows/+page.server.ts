@@ -1,8 +1,9 @@
-import { clientSideSymbologyConfigs } from '$lib/server/appConfig';
+import { getClientSideSymbologyConfigs } from '$lib/server/appConfig';
 
 /** @type {import('./$types').PageLoad} */
 export function load() {
+	const configs = getClientSideSymbologyConfigs();
 	return {
-		configs: clientSideSymbologyConfigs
+		configs
 	};
 }

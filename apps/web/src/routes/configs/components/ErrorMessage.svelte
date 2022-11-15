@@ -1,6 +1,5 @@
 <script lang="ts">
-	import lodash from 'lodash';
-	const { get } = lodash;
+	import {get} from 'lodash-es';
 	export let name: string;
 	export let errors;
 

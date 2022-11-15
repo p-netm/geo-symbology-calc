@@ -1,3 +1,4 @@
+import type { Config } from '@onaio/symbology-calc-core';
 import * as yup from 'yup';
 
 // TODO - dry out - duplicate in package core.
@@ -24,16 +25,16 @@ export interface FormFields {
 }
 
 export const defaultColorCodeFormValues = { overFlowDays: undefined, color: undefined };
-export const defaultColorcodeErrorValue = { overFlowDays: undefined, color: undefined }
+export const defaultColorcodeErrorValue = { overFlowDays: undefined, color: undefined };
 export const defaultPriorityFormValues = {
 	priorityLevel: PriorityLevel.VERY_HIGH,
 	frequency: 0,
-	symbologyOnOverflow: [{...defaultColorCodeFormValues}]
+	symbologyOnOverflow: [{ ...defaultColorCodeFormValues }]
 };
 export const defaultPriorityErrorValues = {
 	priorityLevel: undefined,
 	frequency: undefined,
-	symbologyOnOverflow: [{...defaultColorcodeErrorValue}]
+	symbologyOnOverflow: [{ ...defaultColorcodeErrorValue }]
 };
 
 export const initialValues: FormFields = {
@@ -84,6 +85,7 @@ export const configValidationSchema = yup.object().shape({
 					if (body.valid) {
 						return true;
 					}
+					throw Error('Invalid Error: Validation request failed');
 				})
 				.catch(() => {
 					return false;
@@ -94,4 +96,17 @@ export const configValidationSchema = yup.object().shape({
 export const generateFilledData = (formFields: FormFields) => {
 	const { baseUrl, formPair, apiToken, symbolConfig, schedule } = formFields;
 	return { baseUrl, formPair, apiToken, symbolConfig, schedule };
+};
+
+export const getInitialValues = (data?: Config): FormFields => {
+	if (data) {
+		return {
+			baseUrl: data.baseUrl,
+			formPair: data.formPair,
+			apiToken: '<Replace with api token>',
+			symbolConfig: data.symbolConfig,
+			schedule: data.schedule
+		};
+	}
+	return initialValues;
 };

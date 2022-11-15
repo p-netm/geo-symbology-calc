@@ -1,9 +1,10 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { range } from 'lodash';
+	import { range } from 'lodash-es';
 	import { parseForTable } from './utils';
 	import cronstrue from 'cronstrue';
 	import PageHeader from '$lib/shared/components/PageHeader.svelte';
+	import { goto } from '$app/navigation';
 
 	export let data: PageData;
 
@@ -20,6 +21,32 @@
 					'Pipeline triggered manually and is running asyncronously, Please note: This does not mean the pipeline executed successfully'
 				);
 			})
+			.catch((err) => {
+				alert(err.message);
+			});
+	};
+
+	const editTrigger = async (baseUrl: string, regFormId: string, visitFormId: string) => {
+		const sParams = new URLSearchParams({
+			baseUrl,
+			regFormId,
+			visitFormId
+		});
+		const fullUrl = `/configs?${sParams.toString()}`;
+		goto(fullUrl);
+	};
+
+	const deleteTrigger = async (baseUrl: string, regFormId: string, visitFormId: string) => {
+		const sParams = new URLSearchParams({
+			baseUrl,
+			regFormId,
+			visitFormId
+		});
+		const fullUrl = `/configs?${sParams.toString()}`;
+		return await fetch(fullUrl, {
+			method: 'DELETE'
+		})
+			.then(() => {})
 			.catch((err) => {
 				alert(err.message);
 			});
@@ -52,52 +79,71 @@
 		<PageHeader pageTitle="Configured Pipeline list" />
 		{#each data.configs as config}
 			{@const { tableHeaders, tableRows, colorsColSpan } = parseForTable(config)}
-			<div class="card text-center my-3">
-				<div class="card-header">
-					Color symbology config for: {config.baseUrl}
-				</div>
-				<div class="card-body">
-					<table class="table table-bordered table-sm table-hover">
-						<thead>
-							<tr>
-								{#each tableHeaders as header, i}
-									{#if i === tableHeaders.length - 1}
-										<th scope="col" colspan={colorsColSpan}>{header}</th>
-									{:else}
-										<th scope="col">{header}</th>
-									{/if}
-								{/each}
-							</tr>
-						</thead>
-						<tbody>
-							{#each tableRows as row}
-								<tr>
-									{#each range(colorsColSpan + (tableHeaders.length - 1)) as idx}
-										{@const thisElement = row[idx]}
-										{#if thisElement === undefined}
-											<td />
-										{:else if Array.isArray(thisElement)}
-											<td style={`background-color: ${thisElement[1]}`}
-												><span class="fw-bolder">{thisElement[0]}</span></td
-											>
-										{:else}
-											<td>{thisElement}</td>
-										{/if}
-									{/each}
-								</tr>
-							{/each}
-						</tbody>
-					</table>
-					<span class="card-text d-inline-block me-2 text-muted">Schedule:</span><span
-						class="card-text">{convertCronToHuman(config.schedule)}</span
-					>
-				</div>
-				<div class="card-footer">
+			<div class="card my-3">
+				<div class="card-header d-flex justify-content-end gap-2">
 					<button
 						on:click={() =>
 							manualTrigger(config.baseUrl, config.formPair.regFormId, config.formPair.visitFormId)}
 						class="btn btn-outline-primary btn-sm">Manually Trigger workflow</button
 					>
+					<button
+						on:click={() =>
+							editTrigger(config.baseUrl, config.formPair.regFormId, config.formPair.visitFormId)}
+						class="btn btn-outline-primary btn-sm">Edit Config</button
+					>
+					<button
+						on:click={() =>
+							deleteTrigger(config.baseUrl, config.formPair.regFormId, config.formPair.visitFormId)}
+						class="btn btn-outline-danger btn-sm"
+					>
+					<i class="fas fa-trash"></i> Delete
+					</button>
+				</div>
+				<div class="card-body">
+					<dl class="row">
+						<dt class="col-sm-3">API Base url</dt>
+						<dd class="col-sm-9">{config.baseUrl}</dd>
+						<dt class="col-sm-3">Registration form Id</dt>
+						<dd class="col-sm-9">{config.formPair.regFormId}</dd>
+						<dt class="col-sm-3">Visit form Id</dt>
+						<dd class="col-sm-9">{config.formPair.visitFormId}</dd>
+					</dl>
+					<div class="text-center">
+						<table class="table table-bordered table-sm table-hover text-center">
+							<thead>
+								<tr>
+									{#each tableHeaders as header, i}
+										{#if i === tableHeaders.length - 1}
+											<th scope="col" colspan={colorsColSpan}>{header}</th>
+										{:else}
+											<th scope="col">{header}</th>
+										{/if}
+									{/each}
+								</tr>
+							</thead>
+							<tbody>
+								{#each tableRows as row}
+									<tr>
+										{#each range(colorsColSpan + (tableHeaders.length - 1)) as idx}
+											{@const thisElement = row[idx]}
+											{#if thisElement === undefined}
+												<td />
+											{:else if Array.isArray(thisElement)}
+												<td style={`background-color: ${thisElement[1]}`}
+													><span class="fw-bolder">{thisElement[0]}</span></td
+												>
+											{:else}
+												<td>{thisElement}</td>
+											{/if}
+										{/each}
+									</tr>
+								{/each}
+							</tbody>
+						</table>
+						<span class="card-text d-inline-block me-2 text-muted">Schedule:</span><span
+							class="card-text">{convertCronToHuman(config.schedule)}</span
+						>
+					</div>
 				</div>
 			</div>
 		{/each}

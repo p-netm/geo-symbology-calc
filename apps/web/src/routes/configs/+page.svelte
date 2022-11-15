@@ -6,25 +6,36 @@
 	import {
 		defaultPriorityFormValues,
 		generateFilledData,
-		initialValues,
 		type FormFields,
 		PriorityLevel,
 		configValidationSchema,
 		defaultColorCodeFormValues,
 		defaultPriorityErrorValues,
-		defaultColorcodeErrorValue
+		defaultColorcodeErrorValue,
+		getInitialValues,
+		initialValues
 	} from './utils';
-	import lodash from 'lodash';
+	import {cloneDeep} from 'lodash-es';
 
-	const {cloneDeep} = lodash
+	// props
+	/** @type {import('./$types').PageData} */
+	export let data;
+
 	const preDeterminedPriorityLevels = Object.values(PriorityLevel);
 
 	const { form, errors, handleChange, handleSubmit } = createForm({
-		initialValues,
+		initialValues: getInitialValues(data.config),
 		validationSchema: configValidationSchema,
 		onSubmit: (values) => {
 			const filled = generateFilledData(values);
 			generatedJson = JSON.stringify(filled, null, 2);
+			fetch('/configs', {
+				method: initialValues.baseUrl ? 'POST' : "PUT",
+				body: JSON.stringify(values),
+				headers: {
+					'content-type': 'application/json'
+				}
+			});
 		}
 	});
 
@@ -41,7 +52,9 @@
 	};
 
 	const addColorCodeConfig = (i: number) => () => {
-		$form.symbolConfig[i].symbologyOnOverflow = $form.symbolConfig[i].symbologyOnOverflow.concat(cloneDeep(defaultColorCodeFormValues));
+		$form.symbolConfig[i].symbologyOnOverflow = $form.symbolConfig[i].symbologyOnOverflow.concat(
+			cloneDeep(defaultColorCodeFormValues)
+		);
 		$errors.symbolConfig[i].symbologyOnOverflow = $errors.symbolConfig[
 			i
 		].symbologyOnOverflow.concat(defaultColorcodeErrorValue);
@@ -279,7 +292,7 @@
 			</div>
 
 			<div class="text-center">
-				<button type="submit" class="btn btn-primary">Generate Json</button>
+				<button type="submit" class="btn btn-primary">Save to Configuration file</button>
 			</div>
 		</form>
 	</div>
