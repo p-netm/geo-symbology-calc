@@ -2470,6 +2470,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@zerodevx/svelte-toast@npm:^0.8.2":
+  version: 0.8.2
+  resolution: "@zerodevx/svelte-toast@npm:0.8.2"
+  checksum: 633ddf8d0f1975d1ca8de29e563ac58099f3324cf785e8d6c4e3f57b5015207544aed6fc3d0d00d440e2a084df3d1466d423fe75520a0852b08ea7bae6eb6cb2
+  languageName: node
+  linkType: hard
+
 "abbrev@npm:1, abbrev@npm:^1.0.0":
   version: 1.1.1
   resolution: "abbrev@npm:1.1.1"
@@ -8112,6 +8119,7 @@ eslint-config-turbo@latest:
     "@types/lodash-es": ^4.14.186
     "@typescript-eslint/eslint-plugin": ^5.27.0
     "@typescript-eslint/parser": ^5.27.0
+    "@zerodevx/svelte-toast": ^0.8.2
     config: ^3.3.8
     cronstrue: ^2.14.0
     eslint: ^8.16.0

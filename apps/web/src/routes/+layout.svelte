@@ -1,3 +1,7 @@
+<script>
+import { SvelteToast } from '@zerodevx/svelte-toast'
+</script>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="/">Geo Symbology Transform</a>
@@ -28,3 +32,4 @@
 <div class="container py-3">
 	<slot />
 </div>
+<SvelteToast />

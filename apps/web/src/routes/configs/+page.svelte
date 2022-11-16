@@ -17,6 +17,7 @@
 	} from './utils';
 	import {cloneDeep} from 'lodash-es';
 	import { userTokenUrl } from '$lib/shared/constants';
+	import { toast } from '@zerodevx/svelte-toast'
 
 	// props
 	/** @type {import('./$types').PageData} */
@@ -307,7 +308,7 @@
 				class="btn btn-outline-primary btn-sm"
 				on:click={() => {
 					navigator.clipboard.writeText(generatedJson);
-					alert('config copied to clipboard');
+					toast.push('copied')
 				}}>Copy Config</button
 			>
 		</div>
