@@ -1,4 +1,4 @@
-<div class="schedule-explainer">
+<div class="form-field-explainer">
 	<span>
 		Schedule is a cron expression made of five fields. Each field can have the following values.
 	</span>
@@ -21,7 +21,7 @@
 </div>
 
 <style>
-	.schedule-explainer {
+	.form-field-explainer {
 		font-size: 0.9rem;
 		background-color: #e9ecef;
 		border-radius: 5px;

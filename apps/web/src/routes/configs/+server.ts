@@ -1,7 +1,7 @@
 // send form payload to here
 // get forms from here
 
-import { localConfigFile } from '$lib/shared/constants';
+import { localConfigFile } from '$lib/server/constants';
 import fs from 'node:fs';
 import { json } from '@sveltejs/kit';
 import { getAllSymbologyConfigs } from '$lib/server/appConfig';

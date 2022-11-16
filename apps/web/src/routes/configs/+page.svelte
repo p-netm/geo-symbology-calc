@@ -16,6 +16,7 @@
 		initialValues
 	} from './utils';
 	import {cloneDeep} from 'lodash-es';
+	import { userTokenUrl } from '$lib/shared/constants';
 
 	// props
 	/** @type {import('./$types').PageData} */
@@ -124,6 +125,9 @@
 			<div class="form-group row mb-2">
 				<label for="apiToken" class="col-sm-3">Api token</label>
 				<div class="col-sm-9">
+					<div class="form-field-explainer">
+						 You can get yours at {`${$form.baseUrl ? $form.baseUrl : "<base-api-url>"}${userTokenUrl}`}
+					</div>
 					<input
 						id="apiToken"
 						name="apiToken"
@@ -322,4 +326,12 @@
 		background-color: #e9ecef;
 		border-radius: 8px;
 	}
+	/** TODO - repeated styling code.*/
+	.form-field-explainer {
+		font-size: 0.9rem;
+		background-color: #e9ecef;
+		border-radius: 5px;
+		padding: 8px;
+	}
 </style>
+

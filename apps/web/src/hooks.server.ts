@@ -1,5 +1,5 @@
 import { getAllSymbologyConfigs } from '$lib/server/appConfig';
-import { configDir } from '$lib/shared/constants';
+import { configDir } from '$lib/server/constants';
 import { evaluateOnSchedule } from '@onaio/symbology-calc-core';
 import type { ScheduledTask } from 'node-cron';
 import { watch } from 'node:fs/promises';

@@ -4,7 +4,7 @@ import { geoSymbolLogger } from '../logger/winston';
 import importFresh from 'import-fresh';
 import type { IConfig } from 'config';
 import { basename } from 'node:path';
-import { allSymbolConfigsAccessor } from '$lib/shared/constants';
+import { allSymbolConfigsAccessor } from '$lib/server/constants';
 
 export const getConfig = (key: string, defualt?: unknown, notDefault = false) => {
 	const config: IConfig = importFresh('config');
