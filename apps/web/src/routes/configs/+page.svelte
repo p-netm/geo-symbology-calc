@@ -296,7 +296,7 @@
 			</div>
 
 			<div class="text-center">
-				<button type="submit" class="btn btn-primary">Save to Configuration file</button>
+				<button type="submit" class="btn btn-primary mt-3">Save to Configuration file</button>
 			</div>
 		</form>
 	</div>
@@ -304,7 +304,7 @@
 		<pre>{JSON.stringify(generateFilledData($form), null, 2)}</pre>
 		<div class="text-center">
 			<button
-				class="btn btn-primary"
+				class="btn btn-outline-primary btn-sm"
 				on:click={() => {
 					navigator.clipboard.writeText(generatedJson);
 					alert('config copied to clipboard');
