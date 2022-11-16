@@ -8,3 +8,5 @@
 .dckerignore
 Dockerfile
 README.md
+/apps/web/config
+!/apps/web/config/default.json

@@ -4,7 +4,6 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - configs:/usr/src/symbology/apps/web/configs
-
-volumes:
-  configs:
+      - type: bind
+        source: ./apps/web/config/local.json
+        target: /usr/src/symbology/apps/web/config/local.json
