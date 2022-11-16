@@ -16,7 +16,7 @@ export async function POST({ request }) {
 	const dataText = fs.readFileSync(localConfigFile);
 	const data = JSON.parse(dataText);
 	data.allSymbologyConfigs.push(payload);
-	fs.writeFileSync(localConfigFile, JSON.stringify(data));
+	fs.writeFileSync(localConfigFile, JSON.stringify(data, null, 2));
 	return json({});
 }
 
@@ -43,7 +43,7 @@ export async function PUT({ request }) {
 	configsByKeys[configOfInterestKey] = newConfig;
 
 	data.allSymbologyConfigs = Object.values(configsByKeys);
-	fs.writeFileSync(localConfigFile, JSON.stringify(data));
+	fs.writeFileSync(localConfigFile, JSON.stringify(data, null, 2));
 	return json({});
 }
 
@@ -65,7 +65,7 @@ export async function DELETE({ url }) {
 	});
 
 	data.allSymbologyConfigs = leftSymbolConfigs;
-	fs.writeFileSync(localConfigFile, JSON.stringify(data));
+	fs.writeFileSync(localConfigFile, JSON.stringify(data, null, 2));
 	return json({});
 }
 
