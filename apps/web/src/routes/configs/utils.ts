@@ -104,9 +104,25 @@ export const getInitialValues = (data?: Config): FormFields => {
 			baseUrl: data.baseUrl,
 			formPair: data.formPair,
 			apiToken: '<Replace with api token>',
-			symbolConfig: data.symbolConfig,
+			symbolConfig: data.symbolConfig.map((config) => {
+				return {
+					...config,
+					symbologyOnOverflow: config.symbologyOnOverflow.map((symbology) => {
+						return { ...symbology, color: standardize_color(symbology.color) };
+					})
+				};
+			}),
 			schedule: data.schedule
 		};
 	}
 	return initialValues;
 };
+
+export function standardize_color(str: string) {
+	const ctx = document.createElement('canvas').getContext('2d');
+	if (ctx) {
+		ctx.fillStyle = str;
+		return ctx.fillStyle;
+	}
+	return '';
+}

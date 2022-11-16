@@ -68,3 +68,5 @@ export async function DELETE({ url }) {
 	fs.writeFileSync(localConfigFile, JSON.stringify(data));
 	return json({});
 }
+
+export const prerender = false;
