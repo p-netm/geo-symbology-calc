@@ -9,3 +9,5 @@ const defaultConfigDir = new URL(
 export const configDir = process.env['NODE_CONFIG_DIR'] ?? defaultConfigDir; // TODO - should we check that local.json is provided as an invariant.
 export const defaultConfigFile = resolve(configDir, 'default.json');
 export const localConfigFile = resolve(configDir, 'local.json');
+
+export const allSymbolConfigsAccessor = 'allSymbolConfigs';
