@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { range } from 'lodash-es';
-	import { parseForTable } from './utils';
-	import cronstrue from 'cronstrue';
+	import { convertCronToHuman, parseForTable } from './utils';
 	import PageHeader from '$lib/shared/components/PageHeader.svelte';
 	import { goto } from '$app/navigation';
+	import { toast } from '@zerodevx/svelte-toast'
 
 	export let data: PageData;
 
@@ -17,12 +17,12 @@
 		const fullUrl = `/workflows/run?${sParams.toString()}`;
 		return await fetch(fullUrl)
 			.then(() => {
-				alert(
+				toast.push(
 					'Pipeline triggered manually and is running asyncronously, Please note: This does not mean the pipeline executed successfully'
 				);
 			})
 			.catch((err) => {
-				alert(err.message);
+				toast.push(err.message);
 			});
 	};
 
@@ -46,23 +46,15 @@
 		return await fetch(fullUrl, {
 			method: 'DELETE'
 		})
-			.then(() => {})
+			.then(() => {toast.push("Config deleted.")})
 			.catch((err) => {
-				alert(err.message);
+				toast.push(err.message);
+			}).finally(() => {
+				window.location.reload()	
 			});
 	};
 
-	function convertCronToHuman(cronString: string) {
-		const cronstrueOptions = {
-			verbose: true,
-			use24HourTimeFormat: true
-		};
-		try {
-			return cronstrue.toString(cronString, cronstrueOptions);
-		} catch (err) {
-			return '';
-		}
-	}
+
 </script>
 
 {#if data.configs.length === 0}
@@ -84,19 +76,20 @@
 					<button
 						on:click={() =>
 							manualTrigger(config.baseUrl, config.formPair.regFormId, config.formPair.visitFormId)}
-						class="btn btn-outline-primary btn-sm">Manually Trigger workflow</button
+						class="btn btn-outline-primary btn-sm"
+						><i class="fas fa-cogs" /> Manually Trigger workflow</button
 					>
 					<button
 						on:click={() =>
 							editTrigger(config.baseUrl, config.formPair.regFormId, config.formPair.visitFormId)}
-						class="btn btn-outline-primary btn-sm">Edit Config</button
+						class="btn btn-outline-primary btn-sm"><i class="fas fa-edit" /> Edit</button
 					>
 					<button
 						on:click={() =>
 							deleteTrigger(config.baseUrl, config.formPair.regFormId, config.formPair.visitFormId)}
 						class="btn btn-outline-danger btn-sm"
 					>
-					<i class="fas fa-trash"></i> Delete
+						<i class="fas fa-trash" /> Delete
 					</button>
 				</div>
 				<div class="card-body">

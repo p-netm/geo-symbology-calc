@@ -6,9 +6,7 @@ import fs from 'node:fs';
 import { json } from '@sveltejs/kit';
 import { getAllSymbologyConfigs } from '$lib/server/appConfig';
 import { keyBy } from 'lodash-es';
-
-const generateKey = (baseUrl: string, regId: string, visitId: string) =>
-	`${baseUrl}-${regId}-${visitId}`;
+import { generateKey } from '$lib/shared/utils';
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request }) {

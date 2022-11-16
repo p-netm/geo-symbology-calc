@@ -18,6 +18,7 @@
 	import {cloneDeep} from 'lodash-es';
 	import { userTokenUrl } from '$lib/shared/constants';
 	import { toast } from '@zerodevx/svelte-toast'
+	import { goto } from '$app/navigation';
 
 	// props
 	/** @type {import('./$types').PageData} */
@@ -37,6 +38,9 @@
 				headers: {
 					'content-type': 'application/json'
 				}
+			}).then(() => {
+				toast.push('Edited config file')
+				goto('/workflows')
 			});
 		}
 	});

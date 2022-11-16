@@ -5,6 +5,8 @@ import importFresh from 'import-fresh';
 import type { IConfig } from 'config';
 import { basename } from 'node:path';
 import { allSymbolConfigsAccessor } from '$lib/server/constants';
+import { uniqWith } from 'lodash-es';
+import { generateKey } from '$lib/shared/utils';
 
 export const getConfig = (key: string, defualt?: unknown, notDefault = false) => {
 	const config: IConfig = importFresh('config');
@@ -48,8 +50,22 @@ export function getAllSymbologyConfigs() {
 		};
 	});
 	allSymbologyConfigs.forEach(validateConfigs);
+	const uniqAllSymbolConfigs = uniqWith(allSymbologyConfigs, (config1, config2) => {
+		const key1 = generateKey(
+			config1.baseUrl,
+			config1.formPair.regFormId,
+			config1.formPair.visitFormId
+		);
+		const key2 = generateKey(
+			config2.baseUrl,
+			config2.formPair.regFormId,
+			config2.formPair.visitFormId
+		);
 
-	return allSymbologyConfigs;
+		return key1 === key2;
+	});
+
+	return uniqAllSymbolConfigs;
 }
 
 export function getClientSideSymbologyConfigs() {

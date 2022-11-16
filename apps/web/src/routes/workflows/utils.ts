@@ -1,4 +1,5 @@
 import type { ClientSideSingleSymbolConfig } from '$lib/shared/types';
+import cronstrue from 'cronstrue';
 
 export function parseForTable(singleConfig: ClientSideSingleSymbolConfig) {
 	const tableHeaders = [
@@ -31,4 +32,16 @@ export function parseForTable(singleConfig: ClientSideSingleSymbolConfig) {
 	);
 
 	return { tableHeaders, tableRows, colorsColSpan };
+}
+
+export function convertCronToHuman(cronString: string) {
+	const cronstrueOptions = {
+		verbose: true,
+		use24HourTimeFormat: true
+	};
+	try {
+		return cronstrue.toString(cronString, cronstrueOptions);
+	} catch (err) {
+		return '';
+	}
 }
