@@ -9,21 +9,19 @@ import { uniqWith } from 'lodash-es';
 import yup from 'yup';
 import type { Config } from '@onaio/symbology-calc-core';
 
-export const getConfig = (key: string, defualt?: unknown, notDefault = false) => {
+export const getConfig = (key: string, defualt?: unknown, getFromDefaultToo = true) => {
 	const config: IConfig = importFresh('config');
 
 	const sources = config.util.getConfigSources();
 	const localSource = sources.filter((source) => basename(source.name) === 'local.json')[0];
 
-	if (notDefault) {
-		if (!localSource) {
-			throw new Error(`Invariant: local.json config file was not found.`);
-		}
-		if (localSource.parsed[allSymbolConfigsAccessor] === undefined) {
+	// if only default then return default
+	if (!getFromDefaultToo) {
+		if (localSource?.parsed[allSymbolConfigsAccessor] === undefined) {
 			if (defualt !== undefined) {
 				return defualt;
 			} else {
-				throw new Error(`Invariant: ${key} was not found in the ${localSource.name}`);
+				throw new Error(`${key} was not found in the ${localSource.name}`);
 			}
 		}
 	}
@@ -51,7 +49,7 @@ export function getAllSymbologyConfigs() {
 	const rawSymbologyConfigs = getConfig(
 		allSymbolConfigsAccessor,
 		[],
-		true
+		false
 	) as SingleApiSymbolConfig[];
 	const allSymbologyConfigs = rawSymbologyConfigs.map((config) => {
 		return {
