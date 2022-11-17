@@ -6,7 +6,8 @@ import type { IConfig } from 'config';
 import { basename } from 'node:path';
 import { allSymbolConfigsAccessor } from '$lib/server/constants';
 import { uniqWith } from 'lodash-es';
-import { generateKey } from '$lib/shared/utils';
+import yup from 'yup';
+import type { Config } from '@onaio/symbology-calc-core';
 
 export const getConfig = (key: string, defualt?: unknown, notDefault = false) => {
 	const config: IConfig = importFresh('config');
@@ -37,6 +38,15 @@ export const getConfig = (key: string, defualt?: unknown, notDefault = false) =>
 	}
 };
 
+export function webValidateConfigs(config: Config) {
+	const extraSchema = yup.object().shape({
+		uuid: yup.string().uuid().required('Symbology config does not have a uuid')
+	});
+
+	validateConfigs(config);
+	extraSchema.validateSync(config);
+}
+
 export function getAllSymbologyConfigs() {
 	const rawSymbologyConfigs = getConfig(
 		allSymbolConfigsAccessor,
@@ -49,20 +59,9 @@ export function getAllSymbologyConfigs() {
 			logger: geoSymbolLogger
 		};
 	});
-	allSymbologyConfigs.forEach(validateConfigs);
+	allSymbologyConfigs.forEach(webValidateConfigs);
 	const uniqAllSymbolConfigs = uniqWith(allSymbologyConfigs, (config1, config2) => {
-		const key1 = generateKey(
-			config1.baseUrl,
-			config1.formPair.regFormId,
-			config1.formPair.visitFormId
-		);
-		const key2 = generateKey(
-			config2.baseUrl,
-			config2.formPair.regFormId,
-			config2.formPair.visitFormId
-		);
-
-		return key1 === key2;
+		return config1.uuid === config2.uuid;
 	});
 
 	return uniqAllSymbolConfigs;
@@ -71,7 +70,7 @@ export function getAllSymbologyConfigs() {
 export function getClientSideSymbologyConfigs() {
 	const allSymbologyConfigs = getAllSymbologyConfigs();
 	return (allSymbologyConfigs ?? []).map((symbologyConfig: SingleApiSymbolConfig) => {
-		const { baseUrl, formPair, symbolConfig, schedule } = symbologyConfig;
-		return { baseUrl, formPair, symbolConfig, schedule };
+		const { baseUrl, formPair, symbolConfig, schedule, uuid } = symbologyConfig;
+		return { baseUrl, formPair, symbolConfig, schedule, uuid };
 	});
 }

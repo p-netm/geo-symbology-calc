@@ -1,5 +1,6 @@
-import type { Config } from '@onaio/symbology-calc-core';
 import * as yup from 'yup';
+import { v4 } from 'uuid';
+import type { WebConfig } from '$lib/shared/types';
 
 // TODO - dry out - duplicate in package core.
 export enum PriorityLevel {
@@ -10,6 +11,7 @@ export enum PriorityLevel {
 }
 
 export interface FormFields {
+	uuid: string;
 	baseUrl: string;
 	formPair: {
 		regFormId: string;
@@ -38,6 +40,7 @@ export const defaultPriorityErrorValues = {
 };
 
 export const initialValues: FormFields = {
+	uuid: '',
 	baseUrl: '',
 	formPair: {
 		regFormId: '',
@@ -49,6 +52,7 @@ export const initialValues: FormFields = {
 };
 
 export const configValidationSchema = yup.object().shape({
+	uuid: yup.string(),
 	baseUrl: yup.string().required('Base Url is required'),
 	formPair: yup.object().shape({
 		regFormId: yup.string().required('Geo point registration form is required'),
@@ -94,13 +98,14 @@ export const configValidationSchema = yup.object().shape({
 });
 
 export const generateFilledData = (formFields: FormFields) => {
-	const { baseUrl, formPair, apiToken, symbolConfig, schedule } = formFields;
-	return { baseUrl, formPair, apiToken, symbolConfig, schedule };
+	const { baseUrl, formPair, apiToken, symbolConfig, schedule, uuid } = formFields;
+	return { baseUrl, formPair, apiToken, symbolConfig, schedule, uuid: uuid ? uuid : v4() };
 };
 
-export const getInitialValues = (data?: Config): FormFields => {
+export const getInitialValues = (data?: WebConfig): FormFields => {
 	if (data) {
 		return {
+			uuid: data.uuid,
 			baseUrl: data.baseUrl,
 			formPair: data.formPair,
 			apiToken: '<Replace with api token>',

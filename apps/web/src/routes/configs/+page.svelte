@@ -32,14 +32,15 @@
 		onSubmit: (values) => {
 			const filled = generateFilledData(values);
 			generatedJson = JSON.stringify(filled, null, 2);
+			const successMessage = initialValues.uuid ? 'Added new config to file' : "Edited new config"
 			fetch('/configs', {
-				method: initialValues.baseUrl ? 'POST' : "PUT",
+				method: initialValues.uuid ? 'POST' : "PUT",
 				body: JSON.stringify(values),
 				headers: {
 					'content-type': 'application/json'
 				}
 			}).then(() => {
-				toast.push('Edited config file')
+				toast.push(successMessage)
 				goto('/workflows')
 			});
 		}

@@ -8,11 +8,9 @@
 
 	export let data: PageData;
 
-	const manualTrigger = async (baseUrl: string, regFormId: string, visitFormId: string) => {
+	const manualTrigger = async (uuid: string) => {
 		const sParams = new URLSearchParams({
-			baseUrl,
-			regFormId,
-			visitFormId
+			uuid
 		});
 		const fullUrl = `/workflows/run?${sParams.toString()}`;
 		return await fetch(fullUrl)
@@ -26,21 +24,17 @@
 			});
 	};
 
-	const editTrigger = async (baseUrl: string, regFormId: string, visitFormId: string) => {
+	const editTrigger = async (uuid: string) => {
 		const sParams = new URLSearchParams({
-			baseUrl,
-			regFormId,
-			visitFormId
+			uuid,
 		});
 		const fullUrl = `/configs?${sParams.toString()}`;
 		goto(fullUrl);
 	};
 
-	const deleteTrigger = async (baseUrl: string, regFormId: string, visitFormId: string) => {
+	const deleteTrigger = async (uuid: string) => {
 		const sParams = new URLSearchParams({
-			baseUrl,
-			regFormId,
-			visitFormId
+			uuid,
 		});
 		const fullUrl = `/configs?${sParams.toString()}`;
 		return await fetch(fullUrl, {
@@ -75,18 +69,18 @@
 				<div class="card-header d-flex justify-content-end gap-2">
 					<button
 						on:click={() =>
-							manualTrigger(config.baseUrl, config.formPair.regFormId, config.formPair.visitFormId)}
+							manualTrigger(config.uuid)}
 						class="btn btn-outline-primary btn-sm"
 						><i class="fas fa-cogs" /> Manually Trigger workflow</button
 					>
 					<button
 						on:click={() =>
-							editTrigger(config.baseUrl, config.formPair.regFormId, config.formPair.visitFormId)}
+							editTrigger(config.uuid)}
 						class="btn btn-outline-primary btn-sm"><i class="fas fa-edit" /> Edit</button
 					>
 					<button
 						on:click={() =>
-							deleteTrigger(config.baseUrl, config.formPair.regFormId, config.formPair.visitFormId)}
+							deleteTrigger(config.uuid)}
 						class="btn btn-outline-danger btn-sm"
 					>
 						<i class="fas fa-trash" /> Delete

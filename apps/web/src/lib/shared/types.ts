@@ -1,6 +1,10 @@
 import type { Config } from '@onaio/symbology-calc-core';
 
-export type SingleApiSymbolConfig = Config;
+export interface WebConfig extends Config {
+	uuid: string;
+}
+
+export type SingleApiSymbolConfig = WebConfig;
 
 export type ClientSideSingleSymbolConfig = Pick<
 	Config,

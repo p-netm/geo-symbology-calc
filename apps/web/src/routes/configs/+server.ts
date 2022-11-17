@@ -6,7 +6,6 @@ import fs from 'node:fs';
 import { json } from '@sveltejs/kit';
 import { getAllSymbologyConfigs } from '$lib/server/appConfig';
 import { keyBy } from 'lodash-es';
-import { generateKey } from '$lib/shared/utils';
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request }) {
@@ -27,10 +26,8 @@ export async function PUT({ request }) {
 	// TODO - repeated code.
 	const clientSymbologyConfigs = getAllSymbologyConfigs();
 
-	const configsByKeys = keyBy(clientSymbologyConfigs, (obj) => {
-		return generateKey(obj.baseUrl, obj.formPair.regFormId, obj.formPair.visitFormId);
-	});
-	const configOfInterestKey = generateKey(payload.baseUrl, payload.regFormId, payload.visitFormId);
+	const configsByKeys = keyBy(clientSymbologyConfigs, 'uuid');
+	const configOfInterestKey = payload.uuid;
 	const configOfInterest = configsByKeys[configOfInterestKey];
 
 	const newConfig = {
@@ -47,9 +44,7 @@ export async function PUT({ request }) {
 
 /** @type {import('./$types').RequestHandler} */
 export async function DELETE({ url }) {
-	const baseUrl = url.searchParams.get('baseUrl') ?? '';
-	const regFormId = url.searchParams.get('regFormId') ?? '';
-	const visitFormId = url.searchParams.get('visitFormId') ?? '';
+	const uuid = url.searchParams.get('uuid') ?? '';
 
 	const dataText = fs.readFileSync(localConfigFile);
 	const data = JSON.parse(dataText);
@@ -57,9 +52,7 @@ export async function DELETE({ url }) {
 	// TODO - repeated code.
 	const allSymbologyConfigs = getAllSymbologyConfigs();
 	const leftSymbolConfigs = allSymbologyConfigs.filter((obj) => {
-		const tempKey = generateKey(obj.baseUrl, obj.formPair.regFormId, obj.formPair.visitFormId);
-		const checkKey = generateKey(baseUrl, regFormId, visitFormId);
-		return tempKey !== checkKey;
+		return obj.uuid !== uuid;
 	});
 
 	data.allSymbologyConfigs = leftSymbolConfigs;
