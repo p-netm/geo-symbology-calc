@@ -18,7 +18,7 @@ import { dateOfVisitAccessor, markerColorAccessor, numOfSubmissionsAccessor } fr
  */
 export async function evaluate(config: Omit<Config, 'schedule'>) {
   const { formPair, symbolConfig, logger, baseUrl, apiToken } = config;
-  const regFormSubmissionChunks = config['regFormSubmissionChunks'] ?? 100;
+  const regFormSubmissionChunks = config['regFormSubmissionChunks'] ?? 1000;
   const { regFormId: registrationFormId, visitFormId: visitformId } = formPair;
 
   const service = new OnaApiService(baseUrl, apiToken, logger);

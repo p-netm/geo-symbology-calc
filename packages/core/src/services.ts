@@ -14,7 +14,8 @@ export const customFetch: typeof fetch = async (...rest) => {
   if (response?.ok) {
     return response;
   }
-  throw Error('Network request failed or was not successful');
+  const text = await response.text();
+  throw Error(`${response.status}: ${text}: Network request failed.`);
 };
 
 /** Service class that abstracts function calls to ona data api */
@@ -112,7 +113,7 @@ export class OnaApiService {
 
     do {
       const query = {
-        pageSize: `${pageSize}`,
+        page_size: `${pageSize}`,
         page: `${page}`,
         ...extraQueryObj
       };
