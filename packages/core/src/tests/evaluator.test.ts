@@ -1,5 +1,5 @@
 import { editSubmissionEndpoint, formEndpoint, submittedDataEndpoint } from '../constants';
-import { evaluate } from '../evaluator';
+import { evaluate, evaluatingTasks } from '../evaluator';
 import {
   createConfigs,
   form3623,
@@ -40,7 +40,7 @@ it('works correctly nominal case', async () => {
   // mock getting submissions for each of first form submissions
   nock(configs.baseUrl)
     .get(`/${submittedDataEndpoint}/3623`)
-    .query({ pageSize: 100, page: 1 })
+    .query({ page_size: 1000, page: 1 })
     .reply(200, form3623Submissions);
 
   form3623Submissions.forEach((submission) => {
@@ -50,7 +50,7 @@ it('works correctly nominal case', async () => {
     nock(configs.baseUrl)
       .get(`/${submittedDataEndpoint}/3624`)
       .query({
-        pageSize: 1,
+        page_size: 1,
         page: 1,
         query: `{"facility": ${facilityId}}`,
         sort: '{"date_of_visit": -1}'
@@ -86,9 +86,16 @@ it('works correctly nominal case', async () => {
       });
   });
 
-  await evaluate(configs).catch((err) => {
+  expect(evaluatingTasks).toEqual({});
+  const promiseToEvaluate = evaluate(configs).catch((err) => {
     throw err;
   });
+
+  expect(Object.entries(evaluatingTasks)).toHaveLength(1);
+  expect(evaluatingTasks['uuid']).toBeInstanceOf(Promise);
+  await promiseToEvaluate;
+
+  expect(evaluatingTasks).toEqual({});
 
   expect(loggerMock.mock.calls).toEqual(logCalls);
 
@@ -129,7 +136,7 @@ it('error when fetching the submission on the reg form', async () => {
   // mock getting submissions for each of first form submissions
   nock(configs.baseUrl)
     .get(`/${submittedDataEndpoint}/3623`)
-    .query({ pageSize: 100, page: 1 })
+    .query({ page_size: 1000, page: 1 })
     .replyWithError('Could not find submissions');
 
   await evaluate(configs).catch((err) => {
@@ -147,7 +154,7 @@ it('error when fetching the submission on the reg form', async () => {
       {
         level: 'error',
         message:
-          'Unable to fetch submissions for form id: 3623 page: https://test-api.ona.io/api/v1/data/3623?pageSize=100&page=1 with err : request to https://test-api.ona.io/api/v1/data/3623?pageSize=100&page=1 failed, reason: Could not find submissions'
+          'Unable to fetch submissions for form id: 3623 page: https://test-api.ona.io/api/v1/data/3623?page_size=1000&page=1 with err : request to https://test-api.ona.io/api/v1/data/3623?page_size=1000&page=1 failed, reason: Could not find submissions'
       }
     ],
     [

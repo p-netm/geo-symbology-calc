@@ -20,6 +20,8 @@ export type CronTabString = string;
 
 /** Describes the configs for a single pipeline */
 export interface Config {
+  // an id: helps with managing the configs
+  uuid: string;
   // form pair ids
   formPair: {
     // id for form used to register the geo points

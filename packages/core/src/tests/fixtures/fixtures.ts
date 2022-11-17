@@ -7,6 +7,7 @@ export { form3623, form3623Submissions, form3624Submissions };
 
 export const apiToken = 'apiToken';
 export const createConfigs = (loggerMock: jest.Mock): Config => ({
+  uuid: 'uuid',
   formPair: {
     regFormId: '3623',
     visitFormId: '3624'

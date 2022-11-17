@@ -10,13 +10,15 @@ import {
 import cron from 'node-cron';
 import { dateOfVisitAccessor, markerColorAccessor, numOfSubmissionsAccessor } from './constants';
 
+export const evaluatingTasks: Record<string, Promise<void>> = {};
+
 /** The main function that is able to consume a symbol config, and from it,
  * pull the submissions from the api, after which its able to decide marker-color change
  * and pushes the same to the api.
  *
  * @param config - symbol config
  */
-export async function evaluate(config: Omit<Config, 'schedule'>) {
+export async function baseEvaluate(config: Omit<Config, 'schedule'>) {
   const { formPair, symbolConfig, logger, baseUrl, apiToken } = config;
   const regFormSubmissionChunks = config['regFormSubmissionChunks'] ?? 1000;
   const { regFormId: registrationFormId, visitFormId: visitformId } = formPair;
@@ -104,6 +106,17 @@ export async function evaluate(config: Omit<Config, 'schedule'>) {
       `Finished form pair {regFormId: ${config.formPair.regFormId}, visitFormId: ${config.formPair.visitFormId}}`
     )
   );
+}
+
+export async function evaluate(config: Omit<Config, 'schedule'>) {
+  if (evaluatingTasks[config.uuid] !== undefined) {
+    return;
+  }
+  const aPromise = baseEvaluate(config);
+  evaluatingTasks[config.uuid] = aPromise;
+  await aPromise.finally(() => {
+    delete evaluatingTasks[config.uuid];
+  });
 }
 
 /** Wrapper around the transform function, calls transform on a schedule */

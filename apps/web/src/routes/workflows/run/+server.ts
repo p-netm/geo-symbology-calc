@@ -1,11 +1,16 @@
-import { error } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 import { getAllSymbologyConfigs } from '$lib/server/appConfig';
 import { keyBy } from 'lodash-es';
-import { evaluate, type Config } from '@onaio/symbology-calc-core';
+import { evaluate, type Config, evaluatingTasks } from '@onaio/symbology-calc-core';
 
 /** @type {import('./$types').RequestHandler} */
 export function GET({ url }) {
 	const uuid = url.searchParams.get('uuid') ?? '';
+
+	const similarTask = evaluatingTasks[uuid];
+	if (similarTask !== undefined) {
+		return json({ message: 'Pipeline is already running' });
+	}
 
 	const associatedConfigs: Record<string, Config> = keyBy(getAllSymbologyConfigs(), 'uuid');
 
@@ -15,5 +20,7 @@ export function GET({ url }) {
 	}
 
 	evaluate(configOfInterest);
-	return new Response(JSON.stringify({ message: 'Pipeline triggered asynchronously' }));
+	return json({
+		message: 'Pipeline triggered asynchronously, This pipeline will run in the backgournd'
+	});
 }

@@ -66,6 +66,7 @@ export const colorDeciderFactory = (symbolConfig: SymbologyConfig, logger?: LogF
 };
 
 export const configValidationSchema = yup.object().shape({
+  uuid: yup.string().required('Config does not have an identifier'),
   baseUrl: yup.string().required('Base Url is required'),
   formPair: yup.object().shape({
     regFormId: yup.string().required('Geo point registration form is required'),

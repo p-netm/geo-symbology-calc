@@ -9,7 +9,7 @@ export const logCalls = [
     {
       level: 'info',
       message:
-        'Fetched 10 submissions for form id: 3623 page: https://test-api.ona.io/api/v1/data/3623?pageSize=100&page=1'
+        'Fetched 10 submissions for form id: 3623 page: https://test-api.ona.io/api/v1/data/3623?page_size=1000&page=1'
     }
   ],
   [
@@ -76,7 +76,7 @@ export const logCalls = [
     {
       level: 'info',
       message:
-        'Fetched 4 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?pageSize=1&page=1&query=%7B%22facility%22%3A+304870%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
+        'Fetched 4 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?page_size=1&page=1&query=%7B%22facility%22%3A+304870%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
     }
   ],
   [
@@ -89,7 +89,7 @@ export const logCalls = [
     {
       level: 'info',
       message:
-        'Fetched 3 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?pageSize=1&page=1&query=%7B%22facility%22%3A+304871%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
+        'Fetched 3 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?page_size=1&page=1&query=%7B%22facility%22%3A+304871%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
     }
   ],
   [
@@ -102,7 +102,7 @@ export const logCalls = [
     {
       level: 'info',
       message:
-        'Fetched 3 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?pageSize=1&page=1&query=%7B%22facility%22%3A+304872%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
+        'Fetched 3 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?page_size=1&page=1&query=%7B%22facility%22%3A+304872%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
     }
   ],
   [
@@ -115,7 +115,7 @@ export const logCalls = [
     {
       level: 'info',
       message:
-        'Fetched 4 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?pageSize=1&page=1&query=%7B%22facility%22%3A+304873%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
+        'Fetched 4 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?page_size=1&page=1&query=%7B%22facility%22%3A+304873%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
     }
   ],
   [
@@ -128,7 +128,7 @@ export const logCalls = [
     {
       level: 'info',
       message:
-        'Fetched 0 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?pageSize=1&page=1&query=%7B%22facility%22%3A+304874%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
+        'Fetched 0 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?page_size=1&page=1&query=%7B%22facility%22%3A+304874%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
     }
   ],
   [
@@ -141,7 +141,7 @@ export const logCalls = [
     {
       level: 'info',
       message:
-        'Fetched 0 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?pageSize=1&page=1&query=%7B%22facility%22%3A+304889%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
+        'Fetched 0 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?page_size=1&page=1&query=%7B%22facility%22%3A+304889%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
     }
   ],
   [
@@ -154,7 +154,7 @@ export const logCalls = [
     {
       level: 'info',
       message:
-        'Fetched 0 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?pageSize=1&page=1&query=%7B%22facility%22%3A+304890%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
+        'Fetched 0 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?page_size=1&page=1&query=%7B%22facility%22%3A+304890%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
     }
   ],
   [
@@ -167,7 +167,7 @@ export const logCalls = [
     {
       level: 'info',
       message:
-        'Fetched 0 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?pageSize=1&page=1&query=%7B%22facility%22%3A+304891%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
+        'Fetched 0 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?page_size=1&page=1&query=%7B%22facility%22%3A+304891%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
     }
   ],
   [
@@ -186,7 +186,7 @@ export const logCalls = [
     {
       level: 'info',
       message:
-        'Fetched 0 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?pageSize=1&page=1&query=%7B%22facility%22%3A+304892%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
+        'Fetched 0 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?page_size=1&page=1&query=%7B%22facility%22%3A+304892%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
     }
   ],
   [
@@ -199,7 +199,7 @@ export const logCalls = [
     {
       level: 'info',
       message:
-        'Fetched 0 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?pageSize=1&page=1&query=%7B%22facility%22%3A+304893%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
+        'Fetched 0 submissions for form id: 3624 page: https://test-api.ona.io/api/v1/data/3624?page_size=1&page=1&query=%7B%22facility%22%3A+304893%7D&sort=%7B%22date_of_visit%22%3A+-1%7D'
     }
   ],
   [

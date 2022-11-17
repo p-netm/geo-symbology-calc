@@ -4,7 +4,7 @@
 	import { convertCronToHuman, parseForTable } from './utils';
 	import PageHeader from '$lib/shared/components/PageHeader.svelte';
 	import { goto } from '$app/navigation';
-	import { toast } from '@zerodevx/svelte-toast'
+	import { toast } from '@zerodevx/svelte-toast';
 
 	export let data: PageData;
 
@@ -14,10 +14,10 @@
 		});
 		const fullUrl = `/workflows/run?${sParams.toString()}`;
 		return await fetch(fullUrl)
-			.then(() => {
-				toast.push(
-					'Pipeline triggered manually and is running asyncronously, Please note: This does not mean the pipeline executed successfully'
-				);
+			.then((res) => {
+				res.json().then((body) => {
+					toast.push(body.message);
+				});
 			})
 			.catch((err) => {
 				toast.push(err.message);
@@ -26,7 +26,7 @@
 
 	const editTrigger = async (uuid: string) => {
 		const sParams = new URLSearchParams({
-			uuid,
+			uuid
 		});
 		const fullUrl = `/configs?${sParams.toString()}`;
 		goto(fullUrl);
@@ -34,21 +34,22 @@
 
 	const deleteTrigger = async (uuid: string) => {
 		const sParams = new URLSearchParams({
-			uuid,
+			uuid
 		});
 		const fullUrl = `/configs?${sParams.toString()}`;
 		return await fetch(fullUrl, {
 			method: 'DELETE'
 		})
-			.then(() => {toast.push("Config deleted.")})
+			.then(() => {
+				toast.push('Config deleted.');
+			})
 			.catch((err) => {
 				toast.push(err.message);
-			}).finally(() => {
-				window.location.reload()	
+			})
+			.finally(() => {
+				window.location.reload();
 			});
 	};
-
-
 </script>
 
 {#if data.configs.length === 0}
@@ -67,22 +68,13 @@
 			{@const { tableHeaders, tableRows, colorsColSpan } = parseForTable(config)}
 			<div class="card my-3">
 				<div class="card-header d-flex justify-content-end gap-2">
-					<button
-						on:click={() =>
-							manualTrigger(config.uuid)}
-						class="btn btn-outline-primary btn-sm"
+					<button on:click={() => manualTrigger(config.uuid)} class="btn btn-outline-primary btn-sm"
 						><i class="fas fa-cogs" /> Manually Trigger workflow</button
 					>
-					<button
-						on:click={() =>
-							editTrigger(config.uuid)}
-						class="btn btn-outline-primary btn-sm"><i class="fas fa-edit" /> Edit</button
+					<button on:click={() => editTrigger(config.uuid)} class="btn btn-outline-primary btn-sm"
+						><i class="fas fa-edit" /> Edit</button
 					>
-					<button
-						on:click={() =>
-							deleteTrigger(config.uuid)}
-						class="btn btn-outline-danger btn-sm"
-					>
+					<button on:click={() => deleteTrigger(config.uuid)} class="btn btn-outline-danger btn-sm">
 						<i class="fas fa-trash" /> Delete
 					</button>
 				</div>
