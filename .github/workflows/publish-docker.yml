@@ -63,8 +63,15 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       -
+        name: Check if docker instruction manual changed
+        id: docker-manual-changed
+        uses: tj-actions/changed-files@v34
+        with:
+          files: |
+            docs/user-docker-image.md
+      -
         name: Update repo description
-        if:  ${{ github.event_name == 'pull_request' }}
+        if: steps.docker-manual-changed.outputs.any_changed == 'true'
         uses: peter-evans/dockerhub-description@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
