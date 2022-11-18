@@ -32,10 +32,10 @@
 		onSubmit: (values) => {
 			const filled = generateFilledData(values);
 			generatedJson = JSON.stringify(filled, null, 2);
-			const successMessage = initialValues.uuid ? 'Added new config to file' : "Edited new config"
+			const successMessage = initialValues.uuid ? 'Edited config' : "Added new config"
 			fetch('/configs', {
-				method: initialValues.uuid ? 'POST' : "PUT",
-				body: JSON.stringify(values),
+				method: initialValues.uuid ? 'PUT' : "POST",
+				body: JSON.stringify(filled),
 				headers: {
 					'content-type': 'application/json'
 				}
