@@ -30,6 +30,8 @@ Create a local.json in the current working directory. Writes the string `{}` to 
 
 Mounts the local.json we created above to this path `/usr/src/symbology/apps/web/config/local.json` in the container.
 
+> the source path should be absolute.
+
 `-p 3000:3000`
 
 Binds the 3000 port on the host system to the containers 3000 port.
