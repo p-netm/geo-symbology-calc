@@ -13,7 +13,6 @@ see [the official guides for setup instructions by operation system](https://doc
 ### Configuration
 
 Image uses a local json file for configuration. This json should be named `local.json` and be both readable and writable.
-
 The files content can be structured as follows:
 
 ```json

@@ -74,8 +74,8 @@ jobs:
         if: steps.docker-manual-changed.outputs.any_changed == 'true'
         uses: peter-evans/dockerhub-description@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           repository: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
           readme-filepath: docs/user-docker-image.md
       - 
