@@ -1,0 +1,65 @@
+name: publish docker image
+
+on:
+  push:
+    branches:
+      - "main"
+    
+    tags:
+      - v*
+  
+  pull_request:
+    # Run Tests when changes are made to the Docker file
+    paths:
+      - 'Dockerfile'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+       -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
+            ghcr.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      -
+        name: Update repo description
+        if:  ${{ github.event_name == 'pull_request' }}
+        uses: peter-evans/dockerhub-description@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
+          readme-filepath: docs/user-docker-image.md
+      - 
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
