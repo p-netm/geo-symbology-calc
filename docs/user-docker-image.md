@@ -1,6 +1,6 @@
 # Geo Symbology Calc
 
-[github repo](github.com/onaio/geo-symbology-calc)
+[github repo](https://github.com/onaio/geo-symbology-calc)
 
 ## How to use image.
 
@@ -9,6 +9,31 @@
 **Seting up docker**
 
 see [the official guides for setup instructions by operation system](https://docs.docker.com/get-docker/)
+
+### Run
+
+```
+# create an empty local json file.
+echo "{}" >> local.json
+
+# Run image in container
+docker run --mount type=bind,source="$(pwd)/local.json",destination=/usr/src/symbology/apps/web/config/local.json -p 3000:3000 onaio/geo-symbology-calc:latest
+```
+
+**Explanation**:
+
+`echo "{}" >> local.json`
+
+Create a local.json in the current working directory. Writes the string `{}` to the file.
+
+`--mount type=bind,source="$(pwd)/local.json",destination=/usr/src/symbology/apps/web/config/local.json`
+
+Mounts the local.json we created above to this path `/usr/src/symbology/apps/web/config/local.json` in the container.
+
+`-p 3000:3000`
+
+Binds the 3000 port on the host system to the containers 3000 port.
+You can now access the running application at `http://localhost:3000`
 
 ### Configuration
 
@@ -55,28 +80,3 @@ The files content can be structured as follows:
   ]
 }
 ```
-
-### RUn
-
-```
-# create an empty local json file.
-echo "{}" >> local.json
-
-# Run image in container
-docker run --mount type=bind,source="$(pwd)/local.json",destination=/usr/src/symbology/apps/web/config/local.json -p 3000:3000 onaio/geo-symbology-calc:latest
-```
-
-**Explanation**:
-
-`echo "{}" >> local.json`
-
-Create a local.json in the current working directory whose contents is the string: `{}`.
-
-`--mount type=bind,source="$(pwd)/local.json",destination=/usr/src/symbology/apps/web/config/local.json`
-
-Mounts the local.json on the host system to this path `/usr/src/symbology/apps/web/config/local.json` in the container.
-
-`-p 3000:3000`
-
-Binds the 3000 port on the host system to the containers 3000 port.
-You can now access the running application at `http://localhost:3000`
