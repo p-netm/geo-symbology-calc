@@ -1,21 +1,16 @@
 import { createLogger, transports, format } from 'winston';
 import type { LogFn } from '@onaio/symbology-calc-core';
-import config from 'config';
+import { getConfig } from '../appConfig';
+import { combinedLogFilePathAccessor, errorLogFilePathAccessor } from '../constants';
 
 const loggerFormatFn = () =>
-	format.printf((info) => `${info.label}: ${info.level}: ${[info.timestamp]}: ${info.message}`);
+	format.printf((info) => `: ${[info.timestamp]}: ${info.level}: ${info.message}`);
+
+const errorLogFilePath = getConfig(errorLogFilePathAccessor, '') as string;
+const combinedLogFilePath = getConfig(combinedLogFilePathAccessor, '') as string;
 
 const logger = createLogger({
 	transports: [
-		// output only errors (level 0) to default error logs file
-		new transports.File({
-			level: 'error',
-			filename: config.get('errorLogFilePath')
-		}),
-		new transports.File({
-			filename: config.get('combinedLogFilePath'),
-			level: 'verbose'
-		}),
 		new transports.Console({
 			level: 'silly'
 		})
@@ -32,6 +27,24 @@ const logger = createLogger({
 		loggerFormatFn()
 	)
 });
+
+if (errorLogFilePath) {
+	logger.add(
+		new transports.File({
+			level: 'error',
+			filename: errorLogFilePath
+		})
+	);
+}
+
+if (combinedLogFilePath) {
+	logger.add(
+		new transports.File({
+			filename: combinedLogFilePath,
+			level: 'verbose'
+		})
+	);
+}
 
 const geoSymbolLogger: LogFn = (messageObj) => {
 	const { message, level } = messageObj;

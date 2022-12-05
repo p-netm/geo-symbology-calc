@@ -11,4 +11,8 @@ export const configDir = process.env['NODE_CONFIG_DIR'] ?? defaultConfigDir; // 
 export const defaultConfigFile = resolve(configDir, 'default.json');
 export const localConfigFile = resolve(configDir, 'local.json');
 
+// magic strings
+export const errorLogFilePathAccessor = 'errorLogFilePath' as const;
+export const combinedLogFilePathAccessor = 'combinedLogFilePath' as const;
+
 export { allSymbolConfigsAccessor };

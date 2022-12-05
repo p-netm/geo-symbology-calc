@@ -1,6 +1,6 @@
 {
-	"errorLogFilePath": "../../logs/error.log",
-	"combinedLogFilePath": "../../logs/combined.log",
+	"errorLogFilePath": "",
+	"combinedLogFilePath": "",
 	"allSymbologyConfigs": [
 		{
 			"uuid": "735b3181-ab1e-4e39-905e-5516b7024421",
