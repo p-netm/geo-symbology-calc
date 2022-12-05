@@ -1,6 +1,6 @@
 # Geo Symbology Calc
 
-[github repo](https://github.com/onaio/geo-symbology-calc)
+[github repo](https://github.com/onaio/geo-symbology-calc).
 
 ## How to use image.
 
