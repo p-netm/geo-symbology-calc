@@ -1,6 +1,6 @@
 import { createLogger, transports, format } from 'winston';
 import type { LogFn } from '@onaio/symbology-calc-core';
-import { getConfig } from '../appConfig';
+import { getConfig } from '../appConfig/utils';
 import { combinedLogFilePathAccessor, errorLogFilePathAccessor } from '../constants';
 
 const loggerFormatFn = () =>

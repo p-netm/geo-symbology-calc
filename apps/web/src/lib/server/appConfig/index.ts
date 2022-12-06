@@ -1,40 +1,11 @@
 import { validateConfigs } from '@onaio/symbology-calc-core/src/utils';
 import type { SingleApiSymbolConfig } from 'src/lib/shared/types';
 import { geoSymbolLogger } from '../logger/winston';
-import importFresh from 'import-fresh';
-import type { IConfig } from 'config';
-import { basename } from 'node:path';
 import { allSymbolConfigsAccessor } from '$lib/server/constants';
 import { uniqWith } from 'lodash-es';
 import yup from 'yup';
 import type { Config } from '@onaio/symbology-calc-core';
-
-export const getConfig = (key: string, defualt?: unknown, getFromDefaultToo = true) => {
-	const config: IConfig = importFresh('config');
-
-	const sources = config.util.getConfigSources();
-	const localSource = sources.filter((source) => basename(source.name) === 'local.json')[0];
-
-	// if only default then return default
-	if (!getFromDefaultToo) {
-		if (localSource?.parsed[allSymbolConfigsAccessor] === undefined) {
-			if (defualt !== undefined) {
-				return defualt;
-			} else {
-				throw new Error(`${key} was not found in the ${localSource.name}`);
-			}
-		}
-	}
-	try {
-		const value = config.get(key);
-		return value;
-	} catch (err) {
-		if (defualt !== undefined) {
-			return defualt;
-		}
-		throw err;
-	}
-};
+import { getConfig } from './utils';
 
 export function webValidateConfigs(config: Config) {
 	const extraSchema = yup.object().shape({
