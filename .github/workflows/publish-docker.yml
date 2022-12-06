@@ -71,7 +71,7 @@ jobs:
             docs/user-docker-image.md
       -
         name: Update repo description
-        # if: steps.docker-manual-changed.outputs.any_changed == 'true'
+        if: steps.docker-manual-changed.outputs.any_changed == 'true'
         uses: peter-evans/dockerhub-description@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
