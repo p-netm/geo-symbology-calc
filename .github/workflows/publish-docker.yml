@@ -30,8 +30,8 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
-            # ghcr.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
+            onaio/${{ github.event.repository.name }}
+            # ghcr.io/onaio/${{ github.event.repository.name }}
           tags: |
             # set the latest tag for main branch
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
@@ -76,7 +76,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-          repository: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
+          repository: onaio/${{ github.event.repository.name }}
           readme-filepath: docs/user-docker-image.md
       - 
         name: Image digest
