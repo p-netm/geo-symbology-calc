@@ -1,4 +1,4 @@
-import { validateConfigs } from '@onaio/symbology-calc-core/src/utils';
+import { PipelinesController, validateConfigs } from '@onaio/symbology-calc-core';
 import type { SingleApiSymbolConfig } from 'src/lib/shared/types';
 import { geoSymbolLogger } from '../logger/winston';
 import { allSymbolConfigsAccessor } from '$lib/server/constants';
@@ -6,6 +6,7 @@ import { uniqWith } from 'lodash-es';
 import yup from 'yup';
 import type { Config } from '@onaio/symbology-calc-core';
 import { getConfig } from './utils';
+import { readMetricOverride, writePripelineMetrics } from '../logger/configMetrics';
 
 export function webValidateConfigs(config: Config) {
 	const extraSchema = yup.object().shape({
@@ -25,7 +26,9 @@ export function getAllSymbologyConfigs() {
 	const allSymbologyConfigs = rawSymbologyConfigs.map((config) => {
 		return {
 			...config,
-			logger: geoSymbolLogger
+			logger: geoSymbolLogger,
+			writeMetric: writePripelineMetrics,
+			readMetric: readMetricOverride
 		};
 	});
 	allSymbologyConfigs.forEach(webValidateConfigs);
@@ -39,7 +42,9 @@ export function getAllSymbologyConfigs() {
 export function getClientSideSymbologyConfigs() {
 	const allSymbologyConfigs = getAllSymbologyConfigs();
 	return (allSymbologyConfigs ?? []).map((symbologyConfig: SingleApiSymbolConfig) => {
-		const { baseUrl, formPair, symbolConfig, schedule, uuid } = symbologyConfig;
-		return { baseUrl, formPair, symbolConfig, schedule, uuid };
+		const { baseUrl, visitFormId, regFormId, symbolConfig, schedule, uuid } = symbologyConfig;
+		return { baseUrl, visitFormId, regFormId, symbolConfig, schedule, uuid };
 	});
 }
+
+export const pipelineController = new PipelinesController(getAllSymbologyConfigs);

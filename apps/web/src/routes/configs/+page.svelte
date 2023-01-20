@@ -19,22 +19,26 @@
 	import { userTokenUrl } from '$lib/shared/constants';
 	import { toast } from '@zerodevx/svelte-toast'
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 
 	// props
 	/** @type {import('./$types').PageData} */
 	export let data;
 
+    
+    const isEdit = $page.url.searchParams.has('uuid');
+
 	const preDeterminedPriorityLevels = Object.values(PriorityLevel);
 
-	const { form, errors, handleChange, handleSubmit } = createForm({
+	const { form, errors, handleChange, handleSubmit, isValid } = createForm({
 		initialValues: getInitialValues(data.config),
 		validationSchema: configValidationSchema,
 		onSubmit: (values) => {
 			const filled = generateFilledData(values);
 			generatedJson = JSON.stringify(filled, null, 2);
-			const successMessage = initialValues.uuid ? 'Edited config' : "Added new config"
+			const successMessage = isEdit ? 'Edited config' : "Added new config"
 			fetch('/configs', {
-				method: initialValues.uuid ? 'PUT' : "POST",
+				method: isEdit ? 'PUT' : "POST",
 				body: JSON.stringify(filled),
 				headers: {
 					'content-type': 'application/json'
@@ -89,10 +93,10 @@
 						type="text"
 						id="regFormId"
 						class="form-control"
-						name={`formPair.regFormId`}
+						name={`regFormId`}
 						on:change={handleChange}
 						on:blur={handleChange}
-						bind:value={$form.formPair.regFormId}
+						bind:value={$form.regFormId}
 					/>
 					<ErrorMessage {errors} name="formPair.regFormId" />
 				</div>
@@ -104,10 +108,10 @@
 						type="text"
 						id="visitFormId"
 						class="form-control"
-						name={`formPair.visitFormId`}
+						name={`visitFormId`}
 						on:change={handleChange}
 						on:blur={handleChange}
-						bind:value={$form.formPair.visitFormId}
+						bind:value={$form.visitFormId}
 					/>
 					<ErrorMessage {errors} name={`formPair.visitFormId`} />
 				</div>
@@ -199,6 +203,7 @@
 											name={`symbolConfig[${i}].frequency`}
 											id={`symbolConfig[${i}].frequency`}
 											type="number"
+											min = 0
 											class="form-control"
 											on:blur={handleChange}
 											on:change={handleChange}
@@ -223,6 +228,7 @@
 														<div class="col-sm-6">
 															<input
 																type="number"
+																min=0
 																class="form-control"
 																name={`symbolConfig[${i}].symbologyOnOverflow[${j}].overFlowDays`}
 																id={`symbolConfig[${i}].symbologyOnOverflow[${j}].overFlowDays`}
@@ -302,7 +308,7 @@
 			</div>
 
 			<div class="text-center">
-				<button type="submit" class="btn btn-primary mt-3">Save to Configuration file</button>
+				<button type="submit" class="btn btn-primary mt-3">Save configuration</button>
 			</div>
 		</form>
 	</div>
@@ -311,6 +317,7 @@
 		<div class="text-center">
 			<button
 				class="btn btn-outline-primary btn-sm"
+				disabled={!isValid}
 				on:click={() => {
 					navigator.clipboard.writeText(generatedJson);
 					toast.push('copied')

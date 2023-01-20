@@ -1,17 +1,19 @@
-import { Config, PriorityLevel } from '../../types';
-import form3623 from '../fixtures/3623-form.json';
-import form3623Submissions from '../fixtures/3623-form-submissions.json';
-import form3624Submissions from '../fixtures/3624-form-submissions.json';
+import { Config, PriorityLevel } from '../../../helpers/types';
+import form3623 from './3623-form.json';
+import form3623Submissions from './3623-form-submissions.json';
+import form3624Submissions from './3624-form-submissions.json';
+import { defaultWriteMetric } from '../../../helpers/utils';
 
 export { form3623, form3623Submissions, form3624Submissions };
 
 export const apiToken = 'apiToken';
-export const createConfigs = (loggerMock: jest.Mock): Config => ({
+export const createConfigs = (
+  loggerMock: jest.Mock,
+  controller = new AbortController()
+): Config => ({
   uuid: 'uuid',
-  formPair: {
-    regFormId: '3623',
-    visitFormId: '3624'
-  },
+  regFormId: '3623',
+  visitFormId: '3624',
   symbolConfig: [
     {
       priorityLevel: PriorityLevel.VERY_HIGH,
@@ -77,5 +79,7 @@ export const createConfigs = (loggerMock: jest.Mock): Config => ({
   logger: loggerMock,
   apiToken,
   baseUrl: 'https://test-api.ona.io',
-  schedule: '* * * * *'
+  schedule: '* * * * *',
+  writeMetric: defaultWriteMetric,
+  requestController: controller
 });

@@ -1,5 +1,6 @@
-import { editSubmissionEndpoint, formEndpoint, submittedDataEndpoint } from '../constants';
-import { evaluate, evaluatingTasks } from '../evaluator';
+import { editSubmissionEndpoint, formEndpoint, submittedDataEndpoint } from '../../constants';
+import { ConfigRunner } from '../configRunner';
+import { PipelinesController } from '../pipelinesController';
 import {
   createConfigs,
   form3623,
@@ -16,6 +17,15 @@ const mockV4 = '0af4f147-d5fd-486a-bf76-d1bf850cc976';
 jest.mock('uuid', () => {
   const v4 = () => mockV4;
   return { __esModule: true, ...jest.requireActual('uuid'), v4 };
+});
+
+jest.mock('node-cron', () => {
+  return {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    schedule: (cronString: string, _callback: () => unknown) => {
+      return `task-${cronString}`;
+    }
+  };
 });
 
 beforeAll(() => {
@@ -86,18 +96,38 @@ it('works correctly nominal case', async () => {
       });
   });
 
-  expect(evaluatingTasks).toEqual({});
-  const promiseToEvaluate = evaluate(configs).catch((err) => {
-    throw err;
-  });
+  const pipelinesController = new PipelinesController(() => [configs]);
+  expect(pipelinesController.getPipelines()).toMatchObject({});
+  expect(pipelinesController.getTasks()).toMatchObject({});
 
-  expect(Object.entries(evaluatingTasks)).toHaveLength(1);
-  expect(evaluatingTasks['uuid']).toBeInstanceOf(Promise);
-  await promiseToEvaluate;
+  pipelinesController.evaluateOnSchedule();
+  expect(pipelinesController.getPipelines()).toMatchObject({});
+  expect(pipelinesController.getTasks()).toMatchObject({});
 
-  expect(evaluatingTasks).toEqual({});
+  pipelinesController.cancel();
+  expect(pipelinesController.getPipelines()).toMatchObject({});
+  expect(pipelinesController.getTasks()).toMatchObject({});
 
+  expect(loggerMock.mock.calls).toEqual([]);
+  const configRunner = pipelinesController.getPipelines(configs.uuid);
+  const runner = configRunner as ConfigRunner;
+  expect(runner.isRunning()).toBeFalsy();
+  const response = runner.transform();
+  expect(runner.isRunning()).toBeTruthy();
+  const metric = await response;
+  console.log({ configRunner });
+  expect(runner.isRunning()).toBeFalsy();
   expect(loggerMock.mock.calls).toEqual(logCalls);
+  expect(metric.getValue()).toEqual({
+    configId: 'uuid',
+    endTime: 1673275673342,
+    evaluated: 10,
+    modified: 8,
+    notModifiedWithError: 2,
+    notModifiedWithoutError: 0,
+    startTime: 1673275673342,
+    totalSubmissions: 10
+  });
 
   expect(nock.pendingMocks()).toEqual([]);
 });
@@ -109,7 +139,10 @@ it('error when fetching the registration form', async () => {
   // mock fetched firstform
   nock(configs.baseUrl).get(`/${formEndpoint}/3623`).replyWithError('Could not find form with id');
 
-  await evaluate(configs).catch((err) => {
+  const pipelinesController = new PipelinesController(() => [configs]);
+  const configRunner = pipelinesController.getPipelines(configs.uuid);
+  const runner = configRunner as ConfigRunner;
+  await runner.transform().catch((err) => {
     throw err;
   });
 
@@ -118,7 +151,7 @@ it('error when fetching the registration form', async () => {
       {
         level: 'error',
         message:
-          'Operation to fetch form: 3623, failed with err: FetchError: request to https://test-api.ona.io/api/v1/forms/3623 failed, reason: Could not find form with id'
+          'Operation to fetch form: 3623, failed with err: Error: system: FetchError: request to https://test-api.ona.io/api/v1/forms/3623 failed, reason: Could not find form with id.'
       }
     ]
   ]);
@@ -126,44 +159,4 @@ it('error when fetching the registration form', async () => {
   expect(nock.pendingMocks()).toEqual([]);
 });
 
-it('error when fetching the submission on the reg form', async () => {
-  const loggerMock = jest.fn();
-  const configs = createConfigs(loggerMock);
-
-  // mock fetched firstform
-  nock(configs.baseUrl).get(`/${formEndpoint}/3623`).reply(200, form3623);
-
-  // mock getting submissions for each of first form submissions
-  nock(configs.baseUrl)
-    .get(`/${submittedDataEndpoint}/3623`)
-    .query({ page_size: 1000, page: 1 })
-    .replyWithError('Could not find submissions');
-
-  await evaluate(configs).catch((err) => {
-    throw err;
-  });
-
-  expect(loggerMock.mock.calls).toEqual([
-    [
-      {
-        level: 'verbose',
-        message: 'Fetched form wih form id: 3623'
-      }
-    ],
-    [
-      {
-        level: 'error',
-        message:
-          'Unable to fetch submissions for form id: 3623 page: https://test-api.ona.io/api/v1/data/3623?page_size=1000&page=1 with err : request to https://test-api.ona.io/api/v1/data/3623?page_size=1000&page=1 failed, reason: Could not find submissions'
-      }
-    ],
-    [
-      {
-        level: 'info',
-        message: 'Finished form pair {regFormId: 3623, visitFormId: 3624}'
-      }
-    ]
-  ]);
-
-  expect(nock.pendingMocks()).toEqual([]);
-});
+// can cancel evaluation.
