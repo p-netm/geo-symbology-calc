@@ -18,7 +18,9 @@ async function globalTearDown(config: any) {
 
 	fs.writeFileSync(localJsonPath, JSON.stringify(localJsonRestingValue, null, 2));
 	// remove metrics.json
-	fs.unlinkSync(metricsJsonPath);
+	if (fs.existsSync(metricsJsonPath)) {
+		fs.unlinkSync(metricsJsonPath);
+	}
 }
 
 export default globalTearDown;

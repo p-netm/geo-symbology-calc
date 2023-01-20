@@ -42,7 +42,7 @@ export const initialValues: FormFields = {
 	baseUrl: '',
 	regFormId: '',
 	visitFormId: '',
-	apiToken: '<Replace token here>',
+	apiToken: '<Replace with api token>',
 	symbolConfig: [defaultPriorityFormValues],
 	schedule: ''
 };

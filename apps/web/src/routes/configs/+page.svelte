@@ -97,7 +97,7 @@
 						on:blur={handleChange}
 						bind:value={$form.regFormId}
 					/>
-					<ErrorMessage {errors} name="formPair.regFormId" />
+					<ErrorMessage {errors} name="regFormId" />
 				</div>
 			</div>
 			<div class="form-group row mb-2">
@@ -112,7 +112,7 @@
 						on:blur={handleChange}
 						bind:value={$form.visitFormId}
 					/>
-					<ErrorMessage {errors} name={`formPair.visitFormId`} />
+					<ErrorMessage {errors} name={`visitFormId`} />
 				</div>
 			</div>
 			<div class="form-group row mb-2">
