@@ -15,6 +15,7 @@ import * as yup from 'yup';
 import nodeCron from 'node-cron';
 import { dateOfVisitAccessor, priorityLevelAccessor } from '../constants';
 import { OnaApiService } from '../services/onaApi/services';
+import { Result } from './Result';
 
 export const createInfoLog = (message: string) => ({ level: LogMessageLevels.INFO, message });
 export const createWarnLog = (message: string) => ({ level: LogMessageLevels.WARN, message });
@@ -103,64 +104,6 @@ export const validateConfigs = (config: Config) => {
   return configValidationSchema.validateSync(config);
 };
 
-// Error Codes:
-export enum Sig {
-  ABORT_EVALUATION = 'abort_evaluation'
-}
-
-/** This is a generic interface that describes the output (or ... Result) of
- * a function.
- *
- * A function can either return Success, or Failure.  The intention is to make
- * it clear that both Success and Failure must be considered and handled.
- *
- * Inspired by https://khalilstemmler.com/articles/enterprise-typescript-nodejs/handling-errors-result-class/
- */
-export class Result<T> {
-  public isSuccess: boolean;
-  public isFailure: boolean;
-  public error: string;
-  public errorCode?: Sig;
-  private _value: T;
-
-  private constructor(isSuccess: boolean, error?: string, value?: T, sig?: Sig) {
-    if (isSuccess && error) {
-      throw new Error(`InvalidOperation: A result cannot be 
-        successful and contain an error`);
-    }
-    if (!isSuccess && !error) {
-      throw new Error(`InvalidOperation: A failing result 
-        needs to contain an error message`);
-    }
-
-    this.isSuccess = isSuccess;
-    this.isFailure = !isSuccess;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.error = error!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this._value = value!;
-    this.errorCode = sig;
-
-    Object.freeze(this);
-  }
-
-  public getValue(): T {
-    if (!this.isSuccess) {
-      throw new Error(`Cant retrieve the value from a failed result.`);
-    }
-
-    return this._value;
-  }
-
-  public static ok<U>(value?: U): Result<U> {
-    return new Result<U>(true, undefined, value);
-  }
-
-  public static fail<U>(error: string, code?: Sig): Result<U> {
-    return new Result<U>(false, error, undefined, code);
-  }
-}
-
 export async function getMostRecentVisitDateForFacility(
   service: OnaApiService,
   facilityId: number,
@@ -220,28 +163,6 @@ export function computeTimeToNow(date?: timestamp) {
   recentVisitDiffToNow = Math.ceil((now - date) / msInADay);
   return recentVisitDiffToNow;
 }
-
-export const createMetric = (
-  uuid: string,
-  startTime: timestamp,
-  endTime: timestamp | null,
-  evaluated: number,
-  notModifiedWithoutError: number,
-  notModdifiedDueError: number,
-  modified: number,
-  totalSubmissions?: number
-) => {
-  return {
-    configId: uuid,
-    startTime,
-    endTime,
-    evaluated,
-    notModifiedWithoutError,
-    notModdifiedDueError,
-    modified,
-    totalSubmissions
-  };
-};
 
 export const evaluatingTasks: Record<string, Metric> = {};
 

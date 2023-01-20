@@ -9,19 +9,12 @@ This package contains the core business logic of the app. It does so by:
 
 ## API
 
-### transform **function(config: Omit<Config, 'schedule'>)**
+### PipelineController **constructor(getConfig: () => Config[])>)**
 
-/\*\* The main function that is able to consume a symbol config, and from it,
+/\*_ facade for managing one or more pipelines represented by their Symbol configs _/
 
-- pull the submissions from the api, after which its able to decide marker-color change
-- and pushes the same to the api.
--
-- @param config - symbol config
-  \*/
-
-### transformOnSchedule **function(config: Config)**
-
-/\*_ Wrapper around the transform function, calls transform on a schedule _/
+- **getConfig**
+  - Function that resolves with an array for the symbol configs.
 
 ## Symbol config
 
@@ -93,10 +86,8 @@ For instance, lets look at how the config for running the rules shown in the tab
 
 ```
 {
-  formPair: {
-    regFormId: '0',
-    visitFormId: '1
-  },
+  regFormId: '0',
+  visitFormId: '1,
   symbolConfig: [
     {
       priorityLevel: PriorityLevel.VERY_HIGH,

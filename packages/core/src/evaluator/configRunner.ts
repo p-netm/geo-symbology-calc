@@ -2,25 +2,32 @@ import { OnaApiService } from '../services/onaApi/services';
 import { RegFormSubmission, Config } from '../helpers/types';
 import { numOfSubmissionsAccessor } from '../constants';
 import {
-  Sig,
   createInfoLog,
   createErrorLog,
-  Result,
   defaultWriteMetric,
   colorDeciderFactory
 } from '../helpers/utils';
 import cron from 'node-cron';
 import { createMetricFactory } from './helpers/utils';
 import { transformFacility } from './helpers/utils';
+import { Sig, Result } from '../helpers/Result';
 
+/**
+ * Represents a single config, Contains actions that pertain to the execution
+ *  of the pipeline that a config represents. Objects of this class are interacted
+ * with through the pipelines controller class.
+ */
 export class ConfigRunner {
+  /** holds the json symbol config */
   public config: Config;
+  /** Whether pipeline/runner is currently evaluating */
   private running = false;
 
-  constructor(getConfig: Config) {
-    this.config = getConfig;
+  constructor(config: Config) {
+    this.config = config;
   }
 
+  /** Runs the pipeline, generator that yields metric information regarding the current run */
   async *transformGenerator() {
     const config = this.config;
     const {
@@ -136,6 +143,9 @@ export class ConfigRunner {
     this.running = false;
   }
 
+  /** Wrapper  around the transform generator, collates the metrics and calls a callback that
+   * inverts the control of writing the metric information to the configs writeMetric method.
+   */
   async transform() {
     // create a function that parses the config and supplies default values.
     const config = this.config;
@@ -152,6 +162,7 @@ export class ConfigRunner {
     }
   }
 
+  /** Register a node cron task to run this pipeline */
   schedule() {
     const config = this.config;
     const { schedule } = config;
@@ -163,6 +174,7 @@ export class ConfigRunner {
     return task;
   }
 
+  /** Cancel evaluation using a configured abortController */
   cancel() {
     const config = this.config;
     const abortController = config.requestController;
@@ -176,11 +188,13 @@ export class ConfigRunner {
     return Result.ok();
   }
 
+  /** Update the config on the fly. */
   updateConfig(config: Config) {
     this.cancel();
     this.config = config;
   }
 
+  /** Describes the current run status of the pipeline */
   isRunning() {
     return this.running;
   }

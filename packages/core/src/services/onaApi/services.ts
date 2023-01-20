@@ -7,11 +7,16 @@ import {
 } from '../../constants';
 import { v4 } from 'uuid';
 import { BaseFormSubmission, Color, Form, LogFn, RegFormSubmission } from '../../helpers/types';
-import { createErrorLog, createInfoLog, createVerboseLog, Result } from '../../helpers/utils';
+import { createErrorLog, createInfoLog, createVerboseLog } from '../../helpers/utils';
 import fetchRetry, { RequestInitWithRetry } from 'fetch-retry';
+import { Result } from '../../helpers/Result';
 
 const persistentFetch = fetchRetry(fetch);
 
+/** Wrapper around the default fetch function. Adds a retyr mechanism based on exponential backof
+ * @param input - url or a request object representing the request to be made
+ * @param init - fetch options.
+ */
 export const customFetch = async (input: RequestInfo, init?: RequestInit) => {
   // The exponential backoff strategy can be hardcoded, should it be left to the calling function.
   // post requests are not idempotent

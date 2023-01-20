@@ -81,7 +81,7 @@
 		};
 </script>
 
-<PageHeader pageTitle="Create Symbology configs form" />
+<PageHeader pageTitle="Create Symbol configs form" />
 <div class="row g-3 mx-auto">
 	<div class="col-sm-6 col-md-8">
 		<form class="form" on:submit={handleSubmit}>

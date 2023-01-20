@@ -5,10 +5,19 @@ import {
   colorDeciderFactory,
   getMostRecentVisitDateForFacility,
   computeTimeToNow,
-  createInfoLog,
-  Result
+  createInfoLog
 } from '../../helpers/utils';
+import { Result } from '../../helpers/Result';
 
+/** Given a facility record, fetches its most recent visit, evaluates the marker color
+ * and edits the facility record with the marker color
+ * @param service - to make the api calls.
+ * @param regFormSubmission - the facility record.
+ * @param regFormId - id for the registration form
+ * @param visitFormId - id for the visit form.
+ * @param colorDecider - callback function that given a days duration determines the color to assign to facility
+ * @param logger - callback function to log
+ */
 export async function transformFacility(
   service: OnaApiService,
   regFormSubmission: RegFormSubmission,
@@ -62,6 +71,10 @@ export async function transformFacility(
   return modifificationStatus;
 }
 
+/** Factory function that creates a status representing if/why facility was modified
+ * @param modified - whether facility was modified.
+ * @param result - why facility was or not modified.
+ */
 const createModificationStatus = (modified: boolean, result?: Result<unknown>) => {
   return {
     modified,
@@ -69,6 +82,9 @@ const createModificationStatus = (modified: boolean, result?: Result<unknown>) =
   };
 };
 
+/** creates a function that abstracts creating metric objects. Metric objects represent the
+ * intermediary or final status of a running pipeline.
+ */
 export const createMetricFactory =
   (startTime: timestamp, configId: uuid) =>
   (

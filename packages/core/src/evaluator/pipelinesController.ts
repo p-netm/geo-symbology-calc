@@ -1,8 +1,8 @@
 import { uuid, Config } from '../helpers/types';
-import { Result } from '../helpers/utils';
 import cron from 'node-cron';
 import { ConfigRunner } from './configRunner';
 import { isEqual } from 'lodash-es';
+import { Result } from '../helpers/Result';
 
 console.log({ cron });
 
@@ -10,9 +10,13 @@ interface GetConfigs {
   (): Config[];
 }
 
+/** facade for managing one or more pipelines represented by their Symbol configs */
 export class PipelinesController {
+  /** stores pipelines - representin symbol configs passed to the constructor */
   private pipelines: Record<uuid, ConfigRunner> = {};
+  /** stores cron scheduled tasks */
   private tasks: Record<uuid, cron.ScheduledTask> = {};
+  /** returns the symbolConfigs. the configs can chane dynmacially that is why this is a function */
   private getConfigs: GetConfigs;
 
   constructor(getConfigs: GetConfigs) {
@@ -26,7 +30,9 @@ export class PipelinesController {
     this.getConfigs = getConfigs;
   }
 
-  // called to setup cron tasks.
+  /** Setup cron schedule tasks for all configs or single config if id is provided
+   * @param configId - id for the config whose pipeline should be queed to run on a schedule.
+   */
   evaluateOnSchedule(configId?: string) {
     if (configId) {
       const interestingPipeline = this.pipelines[configId];
@@ -38,6 +44,9 @@ export class PipelinesController {
     }
   }
 
+  /** stops and removes the cron tasks that run pipelines.
+   * @param configId - stop only the pipeline that is keyed by this configid
+   */
   stopScheduledEvaluations(configId?: string) {
     if (configId) {
       const interestingTask = this.tasks[configId];
@@ -54,6 +63,7 @@ export class PipelinesController {
     }
   }
 
+  /** Called to restart pipeline's evaluation should configs change */
   reEvaluatedScheduled() {
     const configs = this.getConfigs();
     const existingPipelinesCounter = {
@@ -79,6 +89,9 @@ export class PipelinesController {
     }
   }
 
+  /** Triggers a pipeline on demand outside its schedule
+   * @param configId - id for the pipeline that should be triggered.
+   */
   manualTriggerEvaluation(configId: string) {
     const interestingPipeline = this.pipelines[configId];
     if (!interestingPipeline) {
@@ -88,6 +101,9 @@ export class PipelinesController {
     return Result.ok('Pipeline triggered successfully, running in the background');
   }
 
+  /** cancel all running pipelines
+   * @param configId - cancel single pipeline keyed by this configId
+   */
   cancel(configId?: string) {
     if (configId) {
       const interestingPipeline = this.pipelines[configId];
@@ -101,6 +117,7 @@ export class PipelinesController {
     }
   }
 
+  /** returns all pipelines created so far */
   getPipelines(configId?: string) {
     if (configId) {
       return this.pipelines[configId];
@@ -108,6 +125,7 @@ export class PipelinesController {
     return Object.values(this.pipelines);
   }
 
+  /** returns tasks for the queued schedule runs. */
   getTasks(configId?: string) {
     if (configId) {
       return this.tasks[configId];
