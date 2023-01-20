@@ -1,9 +1,7 @@
 export const createdConfig1 = {
 	baseUrl: 'https://stage-api.ona.io',
-	formPair: {
-		regFormId: '01',
-		visitFormId: '02'
-	},
+	regFormId: '01',
+	visitFormId: '02',
 	apiToken: '<Replace with api token>',
 	symbolConfig: [
 		{

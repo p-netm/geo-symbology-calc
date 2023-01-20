@@ -26,17 +26,17 @@ test('test', async ({ page }) => {
 	// Click text=Color code is required.
 	await page.locator('text=Color code is required.').click();
 
-	// Click input[name="formPair\.regFormId"]
-	await page.locator('input[name="formPair\\.regFormId"]');
+	// Click input[name="regFormId"]
+	await page.locator('input[name="regFormId"]');
 
-	// Fill input[name="formPair\.regFormId"]
-	await page.locator('input[name="formPair\\.regFormId"]').fill('01');
+	// Fill input[name="regFormId"]
+	await page.locator('input[name="regFormId"]').fill('01');
 
-	// Click input[name="formPair\.visitFormId"]
-	await page.locator('input[name="formPair\\.visitFormId"]').click();
+	// Click input[name="visitFormId"]
+	await page.locator('input[name="visitFormId"]').click();
 
-	// Fill input[name="formPair\.visitFormId"]
-	await page.locator('input[name="formPair\\.visitFormId"]').fill('02');
+	// Fill input[name="visitFormId"]
+	await page.locator('input[name="visitFormId"]').fill('02');
 
 	// Click input[name="baseUrl"]
 	await page.locator('input[name="baseUrl"]').click();

@@ -9,7 +9,7 @@ import {
 import { form3623, form3623Submissions, form3624Submissions } from '../fixtures/fixtures';
 import { address, date, datatype } from 'faker';
 import express from 'express';
-import { trim, split } from 'lodash';
+import { trim, split } from 'lodash-es';
 
 const app = express();
 

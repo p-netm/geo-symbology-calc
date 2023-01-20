@@ -2,7 +2,7 @@ import { uuid, Config } from '../helpers/types';
 import { Result } from '../helpers/utils';
 import cron from 'node-cron';
 import { ConfigRunner } from './configRunner';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 
 console.log({ cron });
 
