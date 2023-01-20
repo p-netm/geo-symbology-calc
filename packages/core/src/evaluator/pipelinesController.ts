@@ -4,7 +4,7 @@ import cron from 'node-cron';
 import { ConfigRunner } from './configRunner';
 import { isEqual } from 'lodash';
 
-console.log({cron})
+console.log({ cron });
 
 interface GetConfigs {
   (): Config[];

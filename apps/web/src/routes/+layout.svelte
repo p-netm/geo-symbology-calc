@@ -1,5 +1,5 @@
 <script>
-import { SvelteToast } from '@zerodevx/svelte-toast'
+	import { SvelteToast } from '@zerodevx/svelte-toast';
 </script>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">

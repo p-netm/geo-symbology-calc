@@ -167,7 +167,7 @@ export async function getMostRecentVisitDateForFacility(
   visitFormId: string,
   logger?: LogFn
 ) {
-  // can run into an error, 
+  // can run into an error,
   // can  yield an empty result.
   const query = {
     query: `{"facility": ${facilityId}}`, // filter visit submissions for this facility

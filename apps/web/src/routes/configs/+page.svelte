@@ -15,9 +15,9 @@
 		getInitialValues,
 		initialValues
 	} from './utils';
-	import {cloneDeep} from 'lodash-es';
+	import { cloneDeep } from 'lodash-es';
 	import { userTokenUrl } from '$lib/shared/constants';
-	import { toast } from '@zerodevx/svelte-toast'
+	import { toast } from '@zerodevx/svelte-toast';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 
@@ -25,8 +25,7 @@
 	/** @type {import('./$types').PageData} */
 	export let data;
 
-    
-    const isEdit = $page.url.searchParams.has('uuid');
+	const isEdit = $page.url.searchParams.has('uuid');
 
 	const preDeterminedPriorityLevels = Object.values(PriorityLevel);
 
@@ -36,16 +35,16 @@
 		onSubmit: (values) => {
 			const filled = generateFilledData(values);
 			generatedJson = JSON.stringify(filled, null, 2);
-			const successMessage = isEdit ? 'Edited config' : "Added new config"
+			const successMessage = isEdit ? 'Edited config' : 'Added new config';
 			fetch('/configs', {
-				method: isEdit ? 'PUT' : "POST",
+				method: isEdit ? 'PUT' : 'POST',
 				body: JSON.stringify(filled),
 				headers: {
 					'content-type': 'application/json'
 				}
 			}).then(() => {
-				toast.push(successMessage)
-				goto('/workflows')
+				toast.push(successMessage);
+				goto('/workflows');
 			});
 		}
 	});
@@ -136,7 +135,9 @@
 				<label for="apiToken" class="col-sm-3">Api token</label>
 				<div class="col-sm-9">
 					<div class="form-field-explainer">
-						 You can get yours at {`${$form.baseUrl ? $form.baseUrl : "<base-api-url>"}${userTokenUrl}`}
+						You can get yours at {`${
+							$form.baseUrl ? $form.baseUrl : '<base-api-url>'
+						}${userTokenUrl}`}
 					</div>
 					<input
 						id="apiToken"
@@ -203,7 +204,7 @@
 											name={`symbolConfig[${i}].frequency`}
 											id={`symbolConfig[${i}].frequency`}
 											type="number"
-											min = 0
+											min="0"
 											class="form-control"
 											on:blur={handleChange}
 											on:change={handleChange}
@@ -228,7 +229,7 @@
 														<div class="col-sm-6">
 															<input
 																type="number"
-																min=0
+																min="0"
 																class="form-control"
 																name={`symbolConfig[${i}].symbologyOnOverflow[${j}].overFlowDays`}
 																id={`symbolConfig[${i}].symbologyOnOverflow[${j}].overFlowDays`}
@@ -320,7 +321,7 @@
 				disabled={!isValid}
 				on:click={() => {
 					navigator.clipboard.writeText(generatedJson);
-					toast.push('copied')
+					toast.push('copied');
 				}}>Copy Config</button
 			>
 		</div>
@@ -347,4 +348,3 @@
 		padding: 8px;
 	}
 </style>
-

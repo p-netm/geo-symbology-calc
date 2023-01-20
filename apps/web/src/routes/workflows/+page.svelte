@@ -137,42 +137,38 @@
 					<hr />
 					<h5>Metrics for the last run</h5>
 					{#if metric === undefined}
-					<div class="card">
-						<div class="card-body">
-							<span class="text-danger"
-								>No previous run information was found for this Pipeline.</span
-							>
+						<div class="card">
+							<div class="card-body">
+								<span class="text-danger"
+									>No previous run information was found for this Pipeline.</span
+								>
+							</div>
 						</div>
-					</div>
-				{:else}
-					{#if config.isRunning}
-						<span class="text-info">Pipeline is currently running.</span>
+					{:else}
+						{#if config.isRunning}
+							<span class="text-info">Pipeline is currently running.</span>
+						{/if}
+						<dl class="row">
+							<dt class="col-sm-9">Started</dt>
+							<dd class="col-sm-3">
+								{metric?.startTime ? formatTimestamp(metric?.startTime) : ' - '}
+							</dd>
+							<dt class="col-sm-9">Ended</dt>
+							<dd class="col-sm-3">
+								{metric?.endTime ? formatTimestamp(metric?.endTime) : ' - '}
+							</dd>
+							<dt class="col-sm-9">Total no. of facilities</dt>
+							<dd class="col-sm-3">{metric?.totalSubmissions ?? ' - '}</dd>
+							<dt class="col-sm-9">No. of facilities evaluated</dt>
+							<dd class="col-sm-3">{metric?.evaluated}</dd>
+							<dt class="col-sm-9">No. of registration submissions modified</dt>
+							<dd class="col-sm-3">{metric?.modified}</dd>
+							<dt class="col-sm-9">No. of registration submissions not modified due to error</dt>
+							<dd class="col-sm-3">{metric?.notModifiedWithError}</dd>
+							<dt class="col-sm-9">No. of registration submissions not modified without error</dt>
+							<dd class="col-sm-3">{metric?.notModifiedWithoutError}</dd>
+						</dl>
 					{/if}
-					<dl class="row">
-						<dt class="col-sm-9">Started</dt>
-						<dd class="col-sm-3">
-							{metric?.startTime ? formatTimestamp(metric?.startTime) : ' - '}
-						</dd>
-						<dt class="col-sm-9">Ended</dt>
-						<dd class="col-sm-3">
-							{metric?.endTime ? formatTimestamp(metric?.endTime) : ' - '}
-						</dd>
-						<dt class="col-sm-9">Total no. of facilities</dt>
-						<dd class="col-sm-3">{metric?.totalSubmissions ?? ' - '}</dd>
-						<dt class="col-sm-9">No. of facilities evaluated</dt>
-						<dd class="col-sm-3">{metric?.evaluated}</dd>
-						<dt class="col-sm-9">No. of registration submissions modified</dt>
-						<dd class="col-sm-3">{metric?.modified}</dd>
-						<dt class="col-sm-9">
-							No. of registration submissions not modified due to error
-						</dt>
-						<dd class="col-sm-3">{metric?.notModifiedWithError}</dd>
-						<dt class="col-sm-9">
-							No. of registration submissions not modified without error
-						</dt>
-						<dd class="col-sm-3">{metric?.notModifiedWithoutError}</dd>
-					</dl>
-				{/if}
 				</div>
 			</div>
 		{/each}
@@ -180,7 +176,7 @@
 {/if}
 
 <style scoped>
-	dt{
+	dt {
 		color: #5e5e5e;
 	}
 </style>

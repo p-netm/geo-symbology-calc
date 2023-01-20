@@ -16,3 +16,12 @@ test('index page has expected h1', async ({ page }) => {
 	);
 	await expect(page.locator('#navbarNav >> text=Workflows')).toHaveAttribute('href', '/workflows');
 });
+
+/**
+ * - config validation
+- Modification to config(adding primary key) does not affect running app.
+- - WorkFlows:
+- trigger manual workflow. - check that metrics are displayed ok.
+- see what haapends when deleting all pipelines.
+- Edit workflow. - this should reflect even in the backend.
+ */

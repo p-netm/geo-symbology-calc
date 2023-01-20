@@ -26,7 +26,8 @@ test('load test on submissions', async () => {
   console.time('[time benchmark] took:');
   const pipelinesController = new PipelinesController(() => [thisConfigs]);
   const configRunner = pipelinesController.getPipelines(configs.uuid) as ConfigRunner;
-  await configRunner.transform()
+  await configRunner
+    .transform()
     .catch((err: Error) => {
       throw err;
     })
