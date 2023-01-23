@@ -4,22 +4,22 @@ import { basename } from 'node:path';
 import { allSymbolConfigsAccessor } from '$lib/server/constants';
 
 export const getConfig = (key: string, defualt?: unknown, getFromDefaultToo = true) => {
-	const config: IConfig = importFresh('config');
+	try {
+		const config: IConfig = importFresh('config');
 
-	const sources = config.util.getConfigSources();
-	const localSource = sources.filter((source) => basename(source.name) === 'local.json')[0];
+		const sources = config.util.getConfigSources();
+		const localSource = sources.filter((source) => basename(source.name) === 'local.json')[0];
 
-	// if only default then return default
-	if (!getFromDefaultToo) {
-		if (localSource?.parsed[allSymbolConfigsAccessor] === undefined) {
-			if (defualt !== undefined) {
-				return defualt;
-			} else {
-				throw new Error(`${key} was not found in the ${localSource.name}`);
+		// if only default then return default
+		if (!getFromDefaultToo) {
+			if (localSource?.parsed[allSymbolConfigsAccessor] === undefined) {
+				if (defualt !== undefined) {
+					return defualt;
+				} else {
+					throw new Error(`${key} was not found in the ${localSource.name}`);
+				}
 			}
 		}
-	}
-	try {
 		const value = config.get(key);
 		return value;
 	} catch (err) {

@@ -83,7 +83,9 @@ export class PipelinesController {
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const [uuid, _] of Object.entries(existingPipelinesCounter)) {
+      this.stopScheduledEvaluations(uuid);
       delete this.pipelines[uuid];
+      delete this.tasks[uuid];
     }
   }
 
