@@ -101,11 +101,11 @@ it('works correctly nominal case', async () => {
   expect(pipelinesController.getPipelines()).toMatchObject({});
   expect(pipelinesController.getTasks()).toMatchObject({});
 
-  pipelinesController.evaluateOnSchedule();
+  pipelinesController.runOnSchedule();
   expect(pipelinesController.getPipelines()).toMatchObject({});
   expect(pipelinesController.getTasks()).toMatchObject({});
 
-  pipelinesController.cancel();
+  pipelinesController.cancelPipelines();
   expect(pipelinesController.getPipelines()).toMatchObject({});
   expect(pipelinesController.getTasks()).toMatchObject({});
 
@@ -159,6 +159,42 @@ it('error when fetching the registration form', async () => {
   ]);
 
   expect(nock.pendingMocks()).toEqual([]);
+});
+
+test('updates configs from empty configs', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let startingConfigs: any[] = [[]];
+  const pipelinesController = new PipelinesController(() => startingConfigs[0]);
+
+  expect(pipelinesController.getPipelines()).toEqual([]);
+  expect(pipelinesController.getTasks()).toEqual([]);
+
+  const sampleConfig = {
+    baseUrl: 'https://stage-api.ona.io',
+    regFormId: '3623',
+    visitFormId: '3624',
+    apiToken: '<Replace with api token>',
+    symbolConfig: [
+      {
+        priorityLevel: 'Very_High',
+        frequency: '8',
+        symbologyOnOverflow: [
+          {
+            overFlowDays: '3',
+            color: '#ff0000'
+          }
+        ]
+      }
+    ],
+    schedule: '0 5 */7 * *',
+    uuid: 'fcbae261-780d-4fd5-abcf-766f51af085e'
+  };
+
+  startingConfigs = [[sampleConfig]];
+
+  pipelinesController.refreshConfigRunners();
+  expect(pipelinesController.getPipelines()).toMatchObject([expect.any(ConfigRunner)]);
+  expect(pipelinesController.getTasks()).toHaveLength(1);
 });
 
 // can cancel evaluation.

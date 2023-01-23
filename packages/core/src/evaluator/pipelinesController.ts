@@ -31,7 +31,7 @@ export class PipelinesController {
   /** Setup cron schedule tasks for all configs or single config if id is provided
    * @param configId - id for the config whose pipeline should be queed to run on a schedule.
    */
-  evaluateOnSchedule(configId?: string) {
+  runOnSchedule(configId?: string) {
     if (configId) {
       const interestingPipeline = this.pipelines[configId];
       const task = interestingPipeline.schedule();
@@ -45,47 +45,75 @@ export class PipelinesController {
   /** stops and removes the cron tasks that run pipelines.
    * @param configId - stop only the pipeline that is keyed by this configid
    */
-  stopScheduledEvaluations(configId?: string) {
+  stopAndRemoveTasks(configId?: string) {
     if (configId) {
       const interestingTask = this.tasks[configId];
-      const interestingPipeline = this.pipelines[configId];
-      interestingPipeline.cancel();
-      interestingTask.stop();
+      interestingTask?.stop();
+      delete this.tasks[configId];
     } else {
-      for (const pipeline of Object.values(this.pipelines)) {
-        pipeline.cancel();
-      }
-      for (const task of Object.values(this.tasks)) {
+      Object.values(this.tasks).forEach((task) => {
         task.stop();
+      });
+      this.tasks = {};
+    }
+  }
+
+  /** cancel all running pipelines
+   * @param configId - cancel single pipeline keyed by this configId
+   */
+  cancelPipelines(configId?: string) {
+    if (configId) {
+      const interestingPipeline = this.pipelines[configId];
+      return interestingPipeline.cancel();
+    } else {
+      const cancelResults = [];
+      for (const pipelines of Object.values(this.pipelines)) {
+        cancelResults.push(pipelines.cancel());
       }
+      return cancelResults;
+    }
+  }
+
+  removePipelines(configId?: string) {
+    if (configId) {
+      delete this.pipelines[configId];
+    } else {
+      this.pipelines = {};
     }
   }
 
   /** Called to restart pipeline's evaluation should configs change */
-  reEvaluatedScheduled() {
+  refreshConfigRunners() {
     const configs = this.getConfigs();
     const existingPipelinesCounter = {
       ...this.pipelines
     };
+
     for (const config of configs) {
       const thisConfigId = config.uuid;
-      delete existingPipelinesCounter[thisConfigId];
       const existingPipeline = this.pipelines[thisConfigId];
+      delete existingPipelinesCounter[thisConfigId];
+
       if (!existingPipeline) {
-        // new config was added.
         this.pipelines[thisConfigId] = new ConfigRunner(config);
-      } else if (!isEqual(this.pipelines.config, config)) {
-        this.stopScheduledEvaluations(thisConfigId);
-        // update pipeline
-        existingPipeline.updateConfig(config);
-        existingPipeline.schedule();
+        this.runOnSchedule(thisConfigId);
+        continue;
+      }
+      if (isEqual(existingPipeline.config, config)) {
+        continue;
+      } else {
+        this.cancelPipelines(thisConfigId);
+        this.removePipelines(thisConfigId);
+        this.stopAndRemoveTasks(thisConfigId);
+        this.pipelines[thisConfigId] = new ConfigRunner(config);
+        this.runOnSchedule(thisConfigId);
       }
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const [uuid, _] of Object.entries(existingPipelinesCounter)) {
-      this.stopScheduledEvaluations(uuid);
-      delete this.pipelines[uuid];
-      delete this.tasks[uuid];
+      this.cancelPipelines(uuid);
+      this.removePipelines(uuid);
+      this.stopAndRemoveTasks(uuid);
     }
   }
 
@@ -99,22 +127,6 @@ export class PipelinesController {
     }
     interestingPipeline.transform();
     return Result.ok('Pipeline triggered successfully, running in the background');
-  }
-
-  /** cancel all running pipelines
-   * @param configId - cancel single pipeline keyed by this configId
-   */
-  cancel(configId?: string) {
-    if (configId) {
-      const interestingPipeline = this.pipelines[configId];
-      return interestingPipeline.cancel();
-    } else {
-      const cancelResults = [];
-      for (const pipelines of Object.values(this.pipelines)) {
-        cancelResults.push(pipelines.cancel());
-      }
-      return cancelResults;
-    }
   }
 
   /** returns all pipelines created so far */
