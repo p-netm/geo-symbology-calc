@@ -5,7 +5,8 @@ import {
   createInfoLog,
   createErrorLog,
   defaultWriteMetric,
-  colorDeciderFactory
+  colorDeciderFactory,
+  validateConfigs
 } from '../helpers/utils';
 import cron from 'node-cron';
 import { createMetricFactory } from './helpers/utils';
@@ -22,9 +23,19 @@ export class ConfigRunner {
   public config: Config;
   /** Whether pipeline/runner is currently evaluating */
   private running = false;
+  /** request abort controller */
+  private abortController;
+  /** stores validity of config */
+  public invalidError: string | null = null;
 
   constructor(config: Config) {
     this.config = config;
+    this.abortController = new AbortController();
+    try {
+      validateConfigs(config);
+    } catch (err: unknown) {
+      this.invalidError = (err as Error).message;
+    }
   }
 
   /** Runs the pipeline, generator that yields metric information regarding the current run */
@@ -37,13 +48,10 @@ export class ConfigRunner {
       logger,
       baseUrl,
       apiToken,
-      requestController,
       uuid: configId,
       regFormSubmissionChunks: facilityProcessingChunks
     } = config;
     const regFormSubmissionChunks = facilityProcessingChunks ?? 1000;
-
-    this.running = true;
 
     const startTime = Date.now();
     const createMetric = createMetricFactory(startTime, configId);
@@ -62,13 +70,13 @@ export class ConfigRunner {
       totalRegFormSubmissions
     );
 
-    const service = new OnaApiService(baseUrl, apiToken, logger, requestController);
+    const service = new OnaApiService(baseUrl, apiToken, logger, this.abortController);
     const colorDecider = colorDeciderFactory(symbolConfig, logger);
 
     abortableBlock: {
       const regForm = await service.fetchSingleForm(regFormId);
       if (regForm.isFailure) {
-        return createMetric(
+        yield createMetric(
           evaluatedSubmissions,
           notModifiedWithoutError,
           notModifiedWithError,
@@ -76,6 +84,7 @@ export class ConfigRunner {
           totalRegFormSubmissions,
           true
         );
+        return;
       }
       const regFormSubmissionsNum = regForm.getValue()[numOfSubmissionsAccessor];
       totalRegFormSubmissions = regFormSubmissionsNum;
@@ -140,24 +149,28 @@ export class ConfigRunner {
       totalRegFormSubmissions,
       true
     );
-    this.running = false;
   }
 
   /** Wrapper  around the transform generator, collates the metrics and calls a callback that
    * inverts the control of writing the metric information to the configs writeMetric method.
    */
   async transform() {
-    // create a function that parses the config and supplies default values.
     const config = this.config;
+    if (this.invalidError) {
+      return Result.fail(`Configuration is not valid, ${this.invalidError}`);
+    }
+    // create a function that parses the config and supplies default values.
     const WriteMetric = config.writeMetric ?? defaultWriteMetric;
     if (this.running) {
       return Result.fail('Pipeline is already running.');
     } else {
+      this.running = true;
       let finalMetric;
       for await (const metric of this.transformGenerator()) {
         WriteMetric(metric);
         finalMetric = metric;
       }
+      this.running = false;
       return Result.ok(finalMetric);
     }
   }
@@ -176,11 +189,7 @@ export class ConfigRunner {
 
   /** Cancel evaluation using a configured abortController */
   cancel() {
-    const config = this.config;
-    const abortController = config.requestController;
-    if (!abortController) {
-      return Result.fail(`Abort controller not set for config : ${config.uuid}`);
-    }
+    const abortController = this.abortController;
     if (!this.running) {
       return;
     }
@@ -197,5 +206,10 @@ export class ConfigRunner {
   /** Describes the current run status of the pipeline */
   isRunning() {
     return this.running;
+  }
+
+  /** Whether config for this runner is valid */
+  isValid() {
+    return this.invalidError === null;
   }
 }

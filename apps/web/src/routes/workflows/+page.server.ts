@@ -6,12 +6,15 @@ import type { ConfigRunner } from '@onaio/symbology-calc-core';
 export function load() {
 	const configs = getClientSideSymbologyConfigs();
 	const ConfigsWithMetrics = configs.map((config) => {
-		const metricForThisConfig = getLastPipelineMetricForConfig(config.uuid);
-		const isRunning = (pipelineController.getPipelines(config.uuid) as ConfigRunner)?.isRunning();
+		const configId = config.uuid;
+		const metricForThisConfig = getLastPipelineMetricForConfig(configId);
+		const pipeLineRunner = pipelineController.getPipelines(configId) as ConfigRunner;
+		const isRunning = pipeLineRunner?.isRunning();
 		return {
 			...config,
 			metric: metricForThisConfig,
-			isRunning
+			isRunning,
+			invalidityErrror: pipeLineRunner.invalidError
 		};
 	});
 	return {

@@ -167,7 +167,6 @@ describe('transform facility tests', () => {
     );
 
     expect(response.modified).toBeFalsy();
-    console.log(typeof response.error);
     expect(response.error).toEqual('400: {"message":"error"}: Network request failed.');
   });
 

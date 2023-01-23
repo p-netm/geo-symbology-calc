@@ -1,21 +1,10 @@
-import { PipelinesController, validateConfigs } from '@onaio/symbology-calc-core';
+import { PipelinesController } from '@onaio/symbology-calc-core';
 import type { SingleApiSymbolConfig } from 'src/lib/shared/types';
 import { geoSymbolLogger } from '../logger/winston';
 import { allSymbolConfigsAccessor } from '$lib/server/constants';
 import { uniqWith } from 'lodash-es';
-import yup from 'yup';
-import type { Config } from '@onaio/symbology-calc-core';
 import { getConfig } from './utils';
 import { readMetricOverride, writePripelineMetrics } from '../logger/configMetrics';
-
-export function webValidateConfigs(config: Config) {
-	const extraSchema = yup.object().shape({
-		uuid: yup.string().uuid().required('Symbology config does not have a uuid')
-	});
-
-	validateConfigs(config);
-	extraSchema.validateSync(config);
-}
 
 export function getAllSymbologyConfigs() {
 	const rawSymbologyConfigs = getConfig(
@@ -31,7 +20,6 @@ export function getAllSymbologyConfigs() {
 			readMetric: readMetricOverride
 		};
 	});
-	allSymbologyConfigs.forEach(webValidateConfigs);
 	const uniqAllSymbolConfigs = uniqWith(allSymbologyConfigs, (config1, config2) => {
 		return config1.uuid === config2.uuid;
 	});

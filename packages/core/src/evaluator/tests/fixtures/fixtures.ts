@@ -7,10 +7,7 @@ import { defaultWriteMetric } from '../../../helpers/utils';
 export { form3623, form3623Submissions, form3624Submissions };
 
 export const apiToken = 'apiToken';
-export const createConfigs = (
-  loggerMock: jest.Mock,
-  controller = new AbortController()
-): Config => ({
+export const createConfigs = (loggerMock: jest.Mock): Config => ({
   uuid: 'uuid',
   regFormId: '3623',
   visitFormId: '3624',
@@ -80,6 +77,5 @@ export const createConfigs = (
   apiToken,
   baseUrl: 'https://test-api.ona.io',
   schedule: '* * * * *',
-  writeMetric: defaultWriteMetric,
-  requestController: controller
+  writeMetric: defaultWriteMetric
 });

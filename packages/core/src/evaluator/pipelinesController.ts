@@ -4,8 +4,6 @@ import { ConfigRunner } from './configRunner';
 import { isEqual } from 'lodash-es';
 import { Result } from '../helpers/Result';
 
-console.log({ cron });
-
 interface GetConfigs {
   (): Config[];
 }

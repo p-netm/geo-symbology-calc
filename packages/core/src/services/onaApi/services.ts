@@ -37,7 +37,6 @@ export const customFetch = async (input: RequestInfo, init?: RequestInit) => {
     }
   };
   const response = await persistentFetch(input, requestOptionsWithRetry).catch((err) => {
-    console.log('===>', err);
     throw Error(`${err.type}: ${err.name}: ${err.message}.`);
   });
   if (response?.ok) {
@@ -156,11 +155,8 @@ export class OnaApiService {
       const paginatedSubmissionsUrl = `${fullSubmissionsUrl}?${sParams.toString()}`;
 
       page = page + 1;
-      // const stop1StartFetchPage = performance.now(); //
-      console.log('We also got here');
       yield await customFetch(paginatedSubmissionsUrl, { ...this.getCommonFetchOptions() })
         .then((res) => {
-          console.log({ res });
           return (res.json() as Promise<FormSubmissionT[]>).then((res) => {
             this.logger?.(
               createInfoLog(
@@ -178,18 +174,6 @@ export class OnaApiService {
           );
           return Result.fail<FormSubmissionT[]>(err.message);
         });
-      // .finally(() => {
-      //   const stop2EndFetchPage = performance.now();
-      //   if (pageSize > 100) {
-      //     this.logger?.(
-      //       createInfoLog(
-      //         `Fetched page: ${page}: from ${stop1StartFetchPage} to ${stop2EndFetchPage} i.e in: ${
-      //           stop2EndFetchPage - stop1StartFetchPage
-      //         }`
-      //       )
-      //     );
-      //   }
-      // });
     } while (page * pageSize <= totalSubmissions);
   }
 
@@ -217,7 +201,6 @@ export class OnaApiService {
     };
     const fullEditSubmissionUrl = `${this.baseUrl}/${editSubmissionPath}`;
 
-    // const stop1StartEdit = performance.now();
     return await customFetch(fullEditSubmissionUrl, {
       ...this.getCommonFetchOptions(),
       method: 'POST',
@@ -234,7 +217,6 @@ export class OnaApiService {
         });
       })
       .catch((err) => {
-        console.log('==>', { err });
         this.logger?.(
           createErrorLog(
             `Failed to edit sumbission with _id: ${submissionPayload._id} for form with id: ${formId} with err: ${err.message}`
@@ -242,16 +224,6 @@ export class OnaApiService {
         );
         return Result.fail(err);
       });
-    // .finally(() => {
-    //   const stop1StopEdit = performance.now();
-    //   this.logger?.(
-    //     createInfoLog(
-    //       `Editing submission with _id: ${submissionPayload._id} took ${
-    //         stop1StopEdit - stop1StartEdit
-    //       }`
-    //     )
-    //   );
-    // });
   }
 }
 

@@ -76,6 +76,10 @@ export interface Config {
  // cron-like syntax that represents when the pipeline represented by this config runs.
  // this can be more easily generated using an online tool like https://crontab.cronhub.io/
  schedule: CronTabString;
+ // how many registration form submissions to process at a time.
+ regFormSubmissionChunks?: number;
+ // store metric; progress information regarding a running pipeline or the last run of an pipeline
+ writeMetric: WriteMetric;
 }
 
 ```

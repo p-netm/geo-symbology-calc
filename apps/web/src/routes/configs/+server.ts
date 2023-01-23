@@ -40,7 +40,6 @@ export async function PUT({ request }) {
 		...configsByUuid,
 		[payload.uuid]: { ...payload, apiToken: configToBeReplaced.apiToken }
 	};
-	console.log({ newConfigs }, configToBeReplaced.apiToken);
 	const newDataConfigs = {
 		...data,
 		allSymbologyConfigs: Object.values(newConfigs)

@@ -90,6 +90,13 @@
 					</button>
 				</div>
 				<div class="card-body">
+					{#if config.invalidityErrror !== null}
+						<div class="card mb-1">
+							<div class="card-body">
+								<span class="text-danger">{config.invalidityErrror}</span>
+							</div>
+						</div>
+					{/if}
 					<dl class="row">
 						<dt class="col-sm-3">API Base url</dt>
 						<dd class="col-sm-9">{config.baseUrl}</dd>

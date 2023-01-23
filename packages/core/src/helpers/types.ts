@@ -38,10 +38,8 @@ export interface Config {
   schedule: CronTabString;
   // how many registration form submissions to process at a time.
   regFormSubmissionChunks?: number;
-  // store metric; progress information regarding a running or the last run of an pipeline
+  // store metric; progress information regarding a running pipeline or the last run of an pipeline
   writeMetric: WriteMetric;
-  // Abort controller to abort evaluation of this pipeline
-  requestController: AbortController;
 }
 
 export enum PriorityLevel {

@@ -24,7 +24,8 @@ jest.mock('node-cron', () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     schedule: (cronString: string, _callback: () => unknown) => {
       return `task-${cronString}`;
-    }
+    },
+    validate: () => true
   };
 });
 
@@ -112,10 +113,11 @@ it('works correctly nominal case', async () => {
   const configRunner = pipelinesController.getPipelines(configs.uuid);
   const runner = configRunner as ConfigRunner;
   expect(runner.isRunning()).toBeFalsy();
+  expect(runner.isValid()).toBeTruthy();
   const response = runner.transform();
   expect(runner.isRunning()).toBeTruthy();
   const metric = await response;
-  console.log({ configRunner });
+
   expect(runner.isRunning()).toBeFalsy();
   expect(loggerMock.mock.calls).toEqual(logCalls);
   expect(metric.getValue()).toEqual({
@@ -140,12 +142,12 @@ it('error when fetching the registration form', async () => {
   nock(configs.baseUrl).get(`/${formEndpoint}/3623`).replyWithError('Could not find form with id');
 
   const pipelinesController = new PipelinesController(() => [configs]);
-  const configRunner = pipelinesController.getPipelines(configs.uuid);
+  const configRunner = pipelinesController.getPipelines(configs.uuid) as ConfigRunner;
   const runner = configRunner as ConfigRunner;
   await runner.transform().catch((err) => {
     throw err;
   });
-
+  expect(configRunner.isRunning()).toBeFalsy();
   expect(loggerMock.mock.calls).toEqual([
     [
       {
